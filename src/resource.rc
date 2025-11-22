@@ -166,10 +166,10 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CTEXT           "Installation ID:",-1,2,11,58,10
     EDITTEXT        101,60,10,250,12,ES_CENTER | ES_AUTOHSCROLL
-    PUSHBUTTON      "Get InstallID from system",102,314,10,74,12
+    PUSHBUTTON      "Get ID from system",102,314,10,74,12
     CTEXT           "Confirmation ID:",-1,2,25,58,10
     EDITTEXT        103,60,24,250,12,ES_CENTER | ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "Store ConfirmID to system",104,314,24,74,12
+    PUSHBUTTON      "Activate",104,314,24,74,12
 END
 
 /////////////////////////////////////////////////////////////////////////////
