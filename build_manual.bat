@@ -1,0 +1,2 @@
+rc.exe .\src\resource.rc^
+&& cl.exe /arch:IA32 /O2 /GS- .\src\xp_activate32.cc .\src\xp_activate32.h resource.res /link /fixed /entry:entry /subsystem:windows,5.1 kernel32.lib user32.lib msvcrt.lib ole32.lib oleaut32.lib comctl32.lib
