@@ -40,18 +40,18 @@ static uint64_t __umul128(uint64_t multiplier, uint64_t multiplicand, uint64_t *
 	uint64_t d = (uint32_t)multiplicand; // & 0xFFFFFFFF;
 
 	//uint64_t ac = __emulu(a, c);
-	uint64_t ad = __emulu(a, d);
+	uint64_t ad = __emulu(static_cast<unsigned int>(a), static_cast<unsigned int>(d));
 	//uint64_t bc = __emulu(b, c);
-	uint64_t bd = __emulu(b, d);
+	uint64_t bd = __emulu(static_cast<unsigned int>(b), static_cast<unsigned int>(d));
 
-	uint64_t adbc = ad + __emulu(b , c);
+	uint64_t adbc = ad + __emulu(static_cast<unsigned int>(b) , static_cast<unsigned int>(c));
 	uint64_t adbc_carry = (adbc < ad); // ? 1 : 0;
 	// MSVC gets confused by the ternary and makes worse code than using a boolean in an integer context for 1 : 0
 
 	// multiplier * multiplicand = product_hi * 2^64 + product_lo
 	uint64_t product_lo = bd + (adbc << 32);
 	uint64_t product_lo_carry = (product_lo < bd); // ? 1 : 0;
-	*product_hi = __emulu(a , c) + (adbc >> 32) + (adbc_carry << 32) + product_lo_carry;
+	*product_hi = __emulu(static_cast<unsigned int>(a) , static_cast<unsigned int>(c)) + (adbc >> 32) + (adbc_carry << 32) + product_lo_carry;
 
 	return product_lo;
 }
@@ -573,8 +573,8 @@ static void Mix(unsigned char* buffer, size_t bufSize, const unsigned char* key,
 		memcpy(sha1_input, buffer + half, half);
 		memcpy(sha1_input + half, key, keySize);
 		sha1_input[half + keySize] = 0x80;
-		sha1_input[sizeof(sha1_input) - 1] = (half + keySize) * 8;
-		sha1_input[sizeof(sha1_input) - 2] = (half + keySize) * 8 / 0x100;
+		sha1_input[sizeof(sha1_input) - 1] = static_cast<unsigned char>((half + keySize)) * 8;
+		sha1_input[sizeof(sha1_input) - 2] = static_cast<unsigned char>((half + keySize)) * 8 / 0x100;
 		sha1_single_block(sha1_input, sha1_result);
 		size_t i;
 		for (i = half & ~3; i < half; i++)
@@ -599,8 +599,8 @@ static void Unmix(unsigned char* buffer, size_t bufSize, const unsigned char* ke
 		memcpy(sha1_input, buffer, half);
 		memcpy(sha1_input + half, key, keySize);
 		sha1_input[half + keySize] = 0x80;
-		sha1_input[sizeof(sha1_input) - 1] = (half + keySize) * 8;
-		sha1_input[sizeof(sha1_input) - 2] = (half + keySize) * 8 / 0x100;
+		sha1_input[sizeof(sha1_input) - 1] = static_cast<unsigned char>((half + keySize)) * 8;
+		sha1_input[sizeof(sha1_input) - 2] = static_cast<unsigned char>((half + keySize)) * 8 / 0x100;
 		sha1_single_block(sha1_input, sha1_result);
 		size_t i;
 		for (i = half & ~3; i < half; i++)
