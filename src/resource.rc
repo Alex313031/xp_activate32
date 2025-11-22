@@ -113,12 +113,12 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SY
 CAPTION MAIN_TITLE
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    CTEXT           "Код установки:",-1,2,11,75,10
-    EDITTEXT        101,77,10,250,12,ES_CENTER | ES_AUTOHSCROLL
-    PUSHBUTTON      "Спросить у системы",102,330,10,74,12
-    CTEXT           "Код подтверждения:",-1,2,25,75,10
-    EDITTEXT        103,77,24,250,12,ES_CENTER | ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "Сказать системе",104,330,24,74,12
+    CTEXT           "Код установки:", -1, 2, 11, 75, 10
+    EDITTEXT        101, 77, 10, 250, 12, ES_CENTER | ES_AUTOHSCROLL
+    PUSHBUTTON      "Спросить у системы", 102, 330, 10, 74, 12
+    CTEXT           "Код подтверждения:", -1, 2, 25, 75, 10
+    EDITTEXT        103, 77, 24, 250, 12, ES_CENTER | ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "Сказать системе", 104, 330, 24, 74, 12
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -164,12 +164,12 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SY
 CAPTION MAIN_TITLE
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    CTEXT           "Installation ID:",-1,2,11,58,10
-    EDITTEXT        101,60,10,250,12,ES_CENTER | ES_AUTOHSCROLL
-    PUSHBUTTON      "Get ID from system",102,314,10,74,12
-    CTEXT           "Confirmation ID:",-1,2,25,58,10
-    EDITTEXT        103,60,24,250,12,ES_CENTER | ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "Activate",104,314,24,74,12
+    CTEXT           "Installation ID:", -1, 2, 11, 58, 10
+    EDITTEXT        101, 60, 10, 250, 12, ES_CENTER | ES_AUTOHSCROLL
+    PUSHBUTTON      "Get ID from system", 102, 314, 10, 74, 12
+    CTEXT           "Confirmation ID:", -1, 2, 25, 58, 10
+    EDITTEXT        103, 60, 24, 250, 12, ES_CENTER | ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "Activate", 104, 314, 24, 74, 12
 END
 
 /////////////////////////////////////////////////////////////////////////////
