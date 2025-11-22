@@ -22,8 +22,8 @@
 #endif
 
 typedef struct {
-	ui64 u[2];
-	ui64 v[2];
+  ui64 u[2];
+  ui64 v[2];
 } TDivisor;
 
 #define ERR_TOO_SHORT 1
