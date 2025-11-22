@@ -20,4 +20,8 @@ Thumbs.db
 *.pdb
 *.res
 *.stamp
+/x86/
+/x64/
+/Debug/
+/Release/
 /release/
