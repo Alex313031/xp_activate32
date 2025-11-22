@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{512c1f24-7979-4e64-9486-e6ed6e34c456}</ProjectGuid>
-    <RootNamespace>XPConfirmationIDKeygen</RootNamespace>
+    <RootNamespace>xp_activate32</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
