@@ -9,11 +9,11 @@
 
 #include "version.h"
 
-#define IDD_MAINFRAME                   100
+#define IDD_MAINFRAME                   100 // Main dialog
 
-#define IDC_MAINFRAME                   103
-#define IDI_SMALL                       203
-#define IDI_MAINFRAME                   IDC_MAINFRAME
+#define IDC_MAINFRAME                   103 // Main window
+#define IDI_MAINFRAME                   IDC_MAINFRAME // Main .exe/window icon
+#define IDI_SMALL                       203 // Main dialog icon
 
 #ifndef IDC_STATIC
  #define IDC_STATIC                     -1
