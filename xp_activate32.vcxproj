@@ -153,8 +153,10 @@
     <ClCompile Include="src/xp_activate32.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src/constants.h" />
     <ClInclude Include="src/resource.h" />
     <ClInclude Include="src/xp_activate32.h" />
+    <ClInclude Include="src/version.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src/resource.rc" />

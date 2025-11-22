@@ -25,10 +25,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src/constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src/resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src/xp_activate32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src/version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

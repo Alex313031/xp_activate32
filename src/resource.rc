@@ -49,6 +49,47 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Version Information
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION
+ PRODUCTVERSION MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS VS_FF_DEBUG // 0x00000010L
+#else
+ FILEFLAGS 0x00000000L // Normal?
+#endif
+ // Windows NT
+ FILEOS VOS_NT_WINDOWS32 // 0x00040004L
+ FILETYPE VFT_APP // 0x00000001L
+ FILESUBTYPE VFT2_UNKNOWN // 0x00000000L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0" // English Unicode
+        BEGIN
+            VALUE "Comments", "https://github.com/Alex313031/xp_activate32"
+            VALUE "CompanyName", "Alex313031"
+            VALUE "FileDescription", "XPConfirmationIDKeygen"
+            VALUE "FileVersion", VERSION_STRING
+            VALUE "InternalName", "xp_activate32"
+            VALUE "LegalCopyright", LEGAL_COPYRIGHT
+            VALUE "LegalTrademarks", "AGPL-3.0"
+            VALUE "OriginalFilename", "xp_activate32.exe"
+            VALUE "ProductName", "XP_Activate32"
+            VALUE "ProductVersion", VERSION_STRING
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1200
+    END
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Icon
 //
 
@@ -69,7 +110,7 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 
 IDD_MAINFRAME DIALOGEX 0, 0, 410, 46
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU
-CAPTION "XP_Activate32"
+CAPTION MAIN_TITLE
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CTEXT           "Код установки:",-1,2,11,75,10
@@ -120,7 +161,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
 
 IDD_MAINFRAME DIALOGEX 0, 0, 395, 46
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU
-CAPTION "XP_Activate32"
+CAPTION MAIN_TITLE
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CTEXT           "Installation ID:",-1,2,11,58,10
