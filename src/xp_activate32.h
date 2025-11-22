@@ -33,6 +33,8 @@ typedef struct {
 #define ERR_UNKNOWN_VERSION 5
 #define ERR_UNLUCKY 6
 
+#define BAD 0xFFFFFFFFFFFFFFFFull
+
 #define CHARTYPE wchar_t
 
 static ui64 residue_add(ui64 x, ui64 y);

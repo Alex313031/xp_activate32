@@ -1,8 +1,11 @@
 #include "xp_activate32.h"
 
 #include <commctrl.h>
+#include <sstream>
 
 static HICON hIcon[2];
+
+#define divisor_double(src, dst) divisor_add(src, src, dst)
 
 static ui64 residue_add(ui64 x, ui64 y) {
 	ui64 z = x + y;
@@ -110,8 +113,6 @@ static ui64 residue_inv(ui64 x) {
   return inverse(x, MOD);
   //{ return residue_pow(x, MOD - 2); }
 }
-
-#define BAD 0xFFFFFFFFFFFFFFFFull
 
 static ui64 residue_sqrt(ui64 what) {
 	if (!what)
@@ -427,7 +428,6 @@ static void divisor_add(const TDivisor* src1, const TDivisor* src2, TDivisor* ds
 		dst->v[1] = BAD;
 	}
 }
-#define divisor_double(src, dst) divisor_add(src, src, dst)
 
 static void divisor_mul(const TDivisor* src, ui64 mult, TDivisor* dst) {
 	if (mult == 0) {
@@ -767,11 +767,6 @@ static int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_i
 
 static wchar_t strings[14][256];
 
-static CLSID licdllCLSID = {0xACADF079, 0xCBCD, 0x4032, {0x83, 0xF2, 0xFA, 0x47, 0xC4, 0xDB, 0x09, 0x6F}};
-static IID licenseAgentIID = {0xB8CBAD79, 0x3F1F, 0x481A, {0xBB, 0x0C, 0xE7, 0xBB, 0xD7, 0x7B, 0xDD, 0xD1}};
-//IID for ICOMLicenseAgent2, with three extra functions
-//static IID licenseAgentIID2 = {0x6A07C5A3, 0x9C67, 0x4BB6, {0xB0, 0x20, 0xEC, 0xBE, 0x7F, 0xDF, 0xD3, 0x26}};
-
 #undef INTERFACE
 #define INTERFACE ICOMLicenseAgent
 DECLARE_INTERFACE_(ICOMLicenseAgent, IDispatch) {
@@ -977,9 +972,15 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 	return FALSE;
 }
 
+std::wstring getVersionW() {
+  std::wostringstream ostr;
+  ostr << MAJOR_VERSION << L"." << MINOR_VERSION << L"." << BUILD_VERSION;
+  return ostr.str();
+}
+
 int main() {
-  std::wstring welcome = ABOUT_VERSION;
-  std::wcout << welcome << std::endl;
+  std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
+  std::wcout << welcome_str << std::endl;
 	INITCOMMONCONTROLSEX cc = {sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES};
 	InitCommonControlsEx(&cc);
 	int i;
@@ -1000,5 +1001,6 @@ int main() {
 		LicenseAgent->Release();
 	if (ComInitialized)
 		CoUninitialize();
+  std::cout << "status = " << status << std::endl;
 	ExitProcess(status);
 }
