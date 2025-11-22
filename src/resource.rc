@@ -69,7 +69,7 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 
 IDD_MAINFRAME DIALOGEX 0, 0, 410, 46
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU
-CAPTION "Телефонная активация Windows XP"
+CAPTION "XP_Activate32"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CTEXT           "Код установки:",-1,2,11,75,10
@@ -87,13 +87,13 @@ END
 
 STRINGTABLE
 BEGIN
-    0                       "Успешная активация"
+    0                       "Успешная активация!"
     1                       "жду код установки..."
     2                       "код слишком длинный"
     3                       "неправильный символ"
     4                       "ошибка в проверочной цифре"
     5                       "неизвестная версия кода"
-    6                       "ну очень невезучий код"
+    6                       "ну очень невезучий код..."
     7                       "говорю с системой..."
     8                       "Ошибка"
     9                       "Информация"
@@ -120,15 +120,15 @@ LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
 
 IDD_MAINFRAME DIALOGEX 0, 0, 395, 46
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU
-CAPTION "Windows XP telephone activation"
+CAPTION "XP_Activate32"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CTEXT           "Installation ID:",-1,2,11,58,10
     EDITTEXT        101,60,10,250,12,ES_CENTER | ES_AUTOHSCROLL
-    PUSHBUTTON      "Get from the system",102,314,10,74,12
+    PUSHBUTTON      "Get InstallID from system",102,314,10,74,12
     CTEXT           "Confirmation ID:",-1,2,25,58,10
     EDITTEXT        103,60,24,250,12,ES_CENTER | ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "Store to the system",104,314,24,74,12
+    PUSHBUTTON      "Store ConfirmID to system",104,314,24,74,12
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -138,20 +138,20 @@ END
 
 STRINGTABLE
 BEGIN
-    0                       "Successful activation"
-    1                       "waiting for input..."
-    2                       "ID is too large"
-    3                       "invalid character"
-    4                       "invalid check digit"
-    5                       "unknown version of ID"
-    6                       "this ID is really unlucky"
-    7                       "talking to the system..."
-    8                       "Error"
-    9                       "Information"
-    10                      "Failed to initialize license manager"
-    11                      "Failed to check activation status"
-    12                      "License manager says that the system is already activated"
-    13                      "License manager has failed"
+    0                       "Successful Activation!"
+    1                       "Waiting for input..."
+    2                       "ID is too large!"
+    3                       "Invalid character!"
+    4                       "Invalid check digit!"
+    5                       "Unknown version of ID"
+    6                       "This ID is really unlucky..."
+    7                       "Talking to the system..."
+    8                       "Error: "
+    9                       "Information: "
+    10                      "Failed to initialize the license manager!"
+    11                      "Failed to check activation status..."
+    12                      "License manager reports that the system is already activated."
+    13                      "License manager has failed!"
 END
 
 #endif    // English resources
