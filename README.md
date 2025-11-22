@@ -1,10 +1,10 @@
-# xp_activate32 
+# xp_activate32 <img src="./assets/icon32.png" width="32">
 
-![Confirmation ID Keygen](https://github.com/Endermanch/XPConfirmationIDKeygen/assets/44542704/0333498a-c347-4580-ba54-f2a12754e152)
+![SCreenshot](./assets/screenshot.png)
 
 Mini C++ program for activating Windows XP.
 
-## Installation & Usage
+## Installation & Usage <img src="./assets/xp_flag.png" width="32">
 Self contained, static .exe, simply run and press
 
 ## Building
