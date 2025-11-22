@@ -20,12 +20,15 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="xp_activate32.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xp_activate32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
