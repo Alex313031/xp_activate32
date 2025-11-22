@@ -95,4 +95,12 @@ static void PutIdToSystem(HWND hDlg);
 
 INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+std::wstring getVersionW();
+
+HANDLE LoadImageFromDLL(UINT resourceId,
+                        UINT imgType,
+                        int width,
+                        int height,
+                        UINT flags);
+
 #endif // XP_ACTIVATE32_H_

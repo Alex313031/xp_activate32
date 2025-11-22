@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Image Include="src/keys.ico" />
     <Image Include="src/xp_activate32.ico" />
   </ItemGroup>
   <ItemGroup>

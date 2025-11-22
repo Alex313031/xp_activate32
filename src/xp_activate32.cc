@@ -972,6 +972,60 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 	return FALSE;
 }
 
+HANDLE LoadImageFromDLL(LPCWSTR dllName,
+                        UINT resourceId,
+                        UINT imgType,
+                        int width,
+                        int height,
+                        UINT flags) {
+  // Load the .dll module from supplied name
+  HMODULE hModule = LoadLibraryW(dllName);
+  if (!hModule) {
+    return nullptr;
+  }
+
+  // Load the image using LoadImageW
+  HANDLE hImage;
+  hImage = LoadImageW(
+      hModule,                   // hinst
+      MAKEINTRESOURCEW(resourceId), // resource name/id
+      imgType,
+      width,
+      height,
+      flags);
+
+  // We can free the module after loading unless caller wants otherwise
+  if (hImage) {
+    FreeLibrary(hModule);
+  }
+
+  return hImage;
+}
+
+HICON getDialogIcon(bool use_custom_icon, int resource, int x, int y) {
+  HICON icon;
+  // Get key icon
+  static const LPCWSTR dll_name = L"shell32.dll";
+  if (use_custom_icon) {
+    icon = (HICON)LoadImageFromDLL(
+        dll_name,
+        resource,
+        IMAGE_ICON,
+        x,
+        y,
+        LR_DEFAULTCOLOR);
+  } else {
+    icon = (HICON)LoadImage(
+			  GetModuleHandle(NULL),
+			  MAKEINTRESOURCE(IDI_SMALL),  // Our normal telephone icon
+			  IMAGE_ICON,
+			  x,
+			  y,
+			  LR_DEFAULTCOLOR);
+  }
+  return icon;
+}
+
 std::wstring getVersionW() {
   std::wostringstream ostr;
   ostr << MAJOR_VERSION << L"." << MINOR_VERSION << L"." << BUILD_VERSION;
@@ -984,23 +1038,32 @@ int main() {
 	INITCOMMONCONTROLSEX cc = {sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES};
 	InitCommonControlsEx(&cc);
 	int i;
-	for (i = 0; i < 14; i++)
+
+	for (i = 0; i < 14; i++) {
 		LoadString(NULL, i, strings[i], sizeof(strings[i]) / sizeof(strings[i][0]));
-	for (i = 0; i < 2; i++)
-		hIcon[i] = (HICON)LoadImage(
-			GetModuleHandle(NULL),
-			MAKEINTRESOURCE(1),
-			IMAGE_ICON,
-			GetSystemMetrics(i ? SM_CXICON : SM_CXSMICON),
-			GetSystemMetrics(i ? SM_CYICON : SM_CYSMICON),
-			0);
+  }
+
+  int x, y;
+	for (i = 0; i < 2; i++) {
+    x = GetSystemMetrics(i ? SM_CXICON : SM_CXSMICON);
+    y = GetSystemMetrics(i ? SM_CYICON : SM_CYSMICON);
+		hIcon[i] = getDialogIcon(false, 194, x, y);
+  }
+
 	INT_PTR status = DialogBox(NULL, MAKEINTRESOURCE(100), NULL, &DialogProc);
-	for (i = 0; i < 2; i++)
+
+	for (i = 0; i < 2; i++) {
 		DestroyIcon(hIcon[i]);
-	if (LicenseAgent)
+  }
+
+	if (LicenseAgent) {
 		LicenseAgent->Release();
-	if (ComInitialized)
-		CoUninitialize();
+  }
+
+	if (ComInitialized) {
+    CoUninitialize();
+  }
+
   std::cout << "status = " << status << std::endl;
 	ExitProcess(status);
 }

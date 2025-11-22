@@ -15,6 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="src/keys.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
     <Image Include="src/xp_activate32.ico">
       <Filter>Resource Files</Filter>
     </Image>
