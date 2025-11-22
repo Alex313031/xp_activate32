@@ -6,7 +6,7 @@
 #pragma code_page(65001) // UTF-8
 
 #define IDI_MAINFRAME                   103
-#define IDD_MAINFRAME                   1002
+#define IDD_MAINFRAME                   100
 
 #ifndef IDC_STATIC
  #define IDC_STATIC                     -1
