@@ -2,7 +2,15 @@
 // Microsoft Visual C++ generated include file.
 // Used by Resource.rc
 //
-#define IDI_ICON1                       101
+
+#pragma code_page(65001) // UTF-8
+
+#define IDI_MAINFRAME                   103
+#define IDD_MAINFRAME                   1002
+
+#ifndef IDC_STATIC
+ #define IDC_STATIC                     -1
+#endif // IDC_STATIC
 
 // Next default values for new objects
 // 
