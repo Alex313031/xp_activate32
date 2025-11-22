@@ -3,8 +3,8 @@
 
 #include "resource.h"
 
-#include <stdint.h>
 #include <intrin.h>
+#include <iostream>
 
 #include "constants.h"
 

@@ -1,6 +1,11 @@
 #ifndef XP_ACTIVATE32_CONSTANTS_H_
 #define XP_ACTIVATE32_CONSTANTS_H_
 
+#include <cstdint>
+#include <string>
+
+#define assert(x) /*nothing*/
+
 typedef int64_t i64;
 typedef uint64_t ui64;
 

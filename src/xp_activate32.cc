@@ -3,8 +3,6 @@
 #include <windows.h>
 #include <commctrl.h>
 
-#define assert(x) /*nothing*/
-
 typedef struct {
 	ui64 u[2];
 	ui64 v[2];
@@ -1016,6 +1014,8 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 int main() {
+  std::wstring welcome = ABOUT_VERSION;
+  std::wcout << welcome << std::endl;
 	INITCOMMONCONTROLSEX cc = {sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES};
 	InitCommonControlsEx(&cc);
 	int i;
