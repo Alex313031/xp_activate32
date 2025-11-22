@@ -903,15 +903,15 @@ static BOOL LoadLicenseManager(HWND hParentForMsgBox)
 		ComInitialized = TRUE;
 	}
 	if (!LicenseAgent) {
-		HRESULT status = CoCreateInstance(&licdllCLSID, NULL, CLSCTX_INPROC_SERVER, &licenseAgentIID, (void**)&LicenseAgent);
+		HRESULT status = CoCreateInstance(licdllCLSID, NULL, CLSCTX_INPROC_SERVER, licenseAgentIID, (void**)&LicenseAgent);
 		int good = 0;
 		if (SUCCEEDED(status)) {
 			ULONG dwRetCode;
-			status = LicenseAgent->lpVtbl->Initialize(LicenseAgent, 0xC475, 3, 0, &dwRetCode);
+			status = LicenseAgent->Initialize(0xC475, 3, 0, &dwRetCode);
 			if (SUCCEEDED(status) && dwRetCode == 0) {
 				good = 1;
 			} else {
-				LicenseAgent->lpVtbl->Release(LicenseAgent);
+				LicenseAgent->Release();
 				LicenseAgent = NULL;
 			}
 		}
@@ -921,16 +921,16 @@ static BOOL LoadLicenseManager(HWND hParentForMsgBox)
 		}
 	}
 	ULONG dwWPALeft = 0, dwEvalLeft = 0;
-	HRESULT status = LicenseAgent->lpVtbl->GetExpirationInfo(LicenseAgent, &dwWPALeft, &dwEvalLeft);
+	HRESULT status = LicenseAgent->GetExpirationInfo(&dwWPALeft, &dwEvalLeft);
 	if (FAILED(status)) {
 		MessageBox(hParentForMsgBox, strings[11], strings[8], MB_ICONSTOP);
-		LicenseAgent->lpVtbl->Release(LicenseAgent);
+		LicenseAgent->Release();
 		LicenseAgent = NULL;
 		return FALSE;
 	}
 	if (dwWPALeft == 0x7FFFFFFF) {
 		MessageBox(hParentForMsgBox, strings[12], strings[9], MB_ICONWARNING);
-		LicenseAgent->lpVtbl->Release(LicenseAgent);
+		LicenseAgent->Release();
 		LicenseAgent = NULL;
 		return FALSE;
 	}
@@ -945,7 +945,7 @@ static void GetIdFromSystem(HWND hDlg)
 	EnableWindow(GetDlgItem(hDlg, 102), FALSE);
 	UpdateWindow(hDlg);
 	BSTR installationId = NULL;
-	HRESULT status = LicenseAgent->lpVtbl->GenerateInstallationId(LicenseAgent, &installationId);
+	HRESULT status = LicenseAgent->GenerateInstallationId(&installationId);
 	if (FAILED(status) || !installationId) {
 		MessageBox(hDlg, strings[13], strings[8], MB_ICONSTOP);
 	} else {
@@ -968,7 +968,7 @@ static void PutIdToSystem(HWND hDlg)
 	EnableWindow(GetDlgItem(hDlg, 104), FALSE);
 	UpdateWindow(hDlg);
 	BSTR confirmationIdBstr = SysAllocString(confirmationId);
-	HRESULT status = LicenseAgent->lpVtbl->DepositConfirmationId(LicenseAgent, confirmationIdBstr, &dwRetCode);
+	HRESULT status = LicenseAgent->DepositConfirmationId(confirmationIdBstr, &dwRetCode);
 	SysFreeString(confirmationIdBstr);
 	EnableWindow(GetDlgItem(hDlg, 102), TRUE);
 	EnableWindow(GetDlgItem(hDlg, 104), TRUE);
@@ -1015,7 +1015,7 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return FALSE;
 }
 
-void main() {
+int main() {
 	INITCOMMONCONTROLSEX cc = {sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES};
 	InitCommonControlsEx(&cc);
 	int i;
@@ -1033,7 +1033,7 @@ void main() {
 	for (i = 0; i < 2; i++)
 		DestroyIcon(hIcon[i]);
 	if (LicenseAgent)
-		LicenseAgent->lpVtbl->Release(LicenseAgent);
+		LicenseAgent->Release();
 	if (ComInitialized)
 		CoUninitialize();
 	ExitProcess(status);
