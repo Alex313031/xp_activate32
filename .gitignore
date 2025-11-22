@@ -18,5 +18,6 @@ Thumbs.db
 # Built Files
 *.obj
 *.pdb
+*.res
 *.stamp
 /release/
