@@ -1,8 +1,12 @@
 #ifndef XP_ACTIVATE32_CONSTANTS_H_
 #define XP_ACTIVATE32_CONSTANTS_H_
 
+#include "framework.h"
+
 #include <cstdint>
 #include <string>
+
+#include "resource.h"
 
 #define assert(x) /*nothing*/
 

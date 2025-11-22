@@ -23,6 +23,12 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src/keygen.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src/utils.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src/xp_activate32.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -31,10 +37,19 @@
     <ClInclude Include="src/constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src/framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src/keygen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src/resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src/xp_activate32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src/utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src/version.h">

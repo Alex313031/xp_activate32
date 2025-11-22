@@ -1,7 +1,7 @@
 #include "xp_activate32.h"
 
-#include <commctrl.h>
-#include <sstream>
+#include "keygen.h"
+#include "utils.h"
 
 static HICON hIcon[2];
 
@@ -972,66 +972,6 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
   return FALSE;
 }
 
-HANDLE LoadImageFromDLL(LPCWSTR dllName,
-                        UINT resourceId,
-                        UINT imgType,
-                        int width,
-                        int height,
-                        UINT flags) {
-  // Load the .dll module from supplied name
-  HMODULE hModule = LoadLibraryW(dllName);
-  if (!hModule) {
-    return nullptr;
-  }
-
-  // Load the image using LoadImageW
-  HANDLE hImage;
-  hImage = LoadImageW(
-      hModule,                   // hinst
-      MAKEINTRESOURCEW(resourceId), // resource name/id
-      imgType,
-      width,
-      height,
-      flags);
-
-  // We can free the module after loading unless caller wants otherwise
-  if (hImage) {
-    FreeLibrary(hModule);
-  }
-
-  return hImage;
-}
-
-HICON getDialogIcon(bool use_custom_icon, int resource, int x, int y) {
-  HICON icon;
-  // Get key icon
-  static const LPCWSTR dll_name = L"shell32.dll";
-  if (use_custom_icon) {
-    icon = (HICON)LoadImageFromDLL(
-        dll_name,
-        resource,
-        IMAGE_ICON,
-        x,
-        y,
-        LR_DEFAULTCOLOR);
-  } else {
-    icon = (HICON)LoadImage(
-        GetModuleHandle(NULL),
-        MAKEINTRESOURCE(IDI_SMALL),  // Our normal telephone icon
-        IMAGE_ICON,
-        x,
-        y,
-        LR_DEFAULTCOLOR);
-  }
-  return icon;
-}
-
-std::wstring getVersionW() {
-  std::wostringstream ostr;
-  ostr << MAJOR_VERSION << L"." << MINOR_VERSION << L"." << BUILD_VERSION;
-  return ostr.str();
-}
-
 int main() {
   std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
   std::wcout << welcome_str << std::endl;
@@ -1043,10 +983,9 @@ int main() {
     LoadString(NULL, i, strings[i], sizeof(strings[i]) / sizeof(strings[i][0]));
   }
 
-  int x, y;
   for (i = 0; i < 2; i++) {
-    x = GetSystemMetrics(i ? SM_CXICON : SM_CXSMICON);
-    y = GetSystemMetrics(i ? SM_CYICON : SM_CYSMICON);
+    int x = GetSystemMetrics(i ? SM_CXICON : SM_CXSMICON);
+    int y = GetSystemMetrics(i ? SM_CYICON : SM_CYSMICON);
     hIcon[i] = getDialogIcon(false, 194, x, y);
   }
 

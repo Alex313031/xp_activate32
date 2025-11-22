@@ -1,13 +1,11 @@
 #ifndef XP_ACTIVATE32_H_
 #define XP_ACTIVATE32_H_
 
-#include "resource.h"
-
 #include <intrin.h>
-#include <iostream>
-#include <windows.h>
 
 #include "constants.h"
+#include "framework.h"
+#include "resource.h"
 
 #ifndef STRICT
  #define STRICT

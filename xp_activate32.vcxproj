@@ -151,12 +151,17 @@
     <Image Include="src/xp_activate32.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src/keygen.cc" />
+    <ClCompile Include="src/utils.cc" />
     <ClCompile Include="src/xp_activate32.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src/constants.h" />
+    <ClInclude Include="src/framework.h" />
+    <ClInclude Include="src/keygen.h" />
     <ClInclude Include="src/resource.h" />
     <ClInclude Include="src/xp_activate32.h" />
+    <ClInclude Include="src/utils.h" />
     <ClInclude Include="src/version.h" />
   </ItemGroup>
   <ItemGroup>
