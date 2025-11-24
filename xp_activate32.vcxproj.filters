@@ -40,6 +40,9 @@
     <ClInclude Include="src/framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src/globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src/keygen.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -35,49 +35,51 @@ typedef struct {
 
 #define CHARTYPE wchar_t
 
-static ui64 residue_add(ui64 x, ui64 y);
+static FILE* fDummyFile;
 
-static ui64 residue_sub(ui64 x, ui64 y);
+ui64 residue_add(ui64 x, ui64 y);
 
-static uint64_t __umul128(uint64_t multiplier, uint64_t multiplicand, uint64_t *product_hi);
+ui64 residue_sub(ui64 x, ui64 y);
 
-static ui64 ui128_quotient_mod(ui64 lo, ui64 hi);
+uint64_t __umul128(uint64_t multiplier, uint64_t multiplicand, uint64_t *product_hi);
 
-static ui64 residue_mul(ui64 x, ui64 y);
+ui64 ui128_quotient_mod(ui64 lo, ui64 hi);
 
-static ui64 residue_pow(ui64 x, ui64 y);
+ui64 residue_mul(ui64 x, ui64 y);
 
-static ui64 inverse(ui64 u, ui64 v);
+ui64 residue_pow(ui64 x, ui64 y);
 
-static ui64 residue_inv(ui64 x);
+ui64 inverse(ui64 u, ui64 v);
 
-static ui64 residue_sqrt(ui64 what);
+ui64 residue_inv(ui64 x);
+
+ui64 residue_sqrt(ui64 what);
 
 int find_divisor_v(TDivisor* d);
 
-static int polynomial_mul(int adeg, const ui64 a[], int bdeg, const ui64 b[], int resultprevdeg, ui64 result[]);
+int polynomial_mul(int adeg, const ui64 a[], int bdeg, const ui64 b[], int resultprevdeg, ui64 result[]);
 
-static int polynomial_div_monic(int adeg, ui64 a[], int bdeg, const ui64 b[], ui64* quotient);
+int polynomial_div_monic(int adeg, ui64 a[], int bdeg, const ui64 b[], ui64* quotient);
 
-static void polynomial_xgcd(int adeg, const ui64 a[3], int bdeg, const ui64 b[3], int* pgcddeg, ui64 gcd[3], int* pmult1deg, ui64 mult1[3], int* pmult2deg, ui64 mult2[3]);
+void polynomial_xgcd(int adeg, const ui64 a[3], int bdeg, const ui64 b[3], int* pgcddeg, ui64 gcd[3], int* pmult1deg, ui64 mult1[3], int* pmult2deg, ui64 mult2[3]);
 
-static int u2poly(const TDivisor* src, ui64 polyu[3], ui64 polyv[2]);
+int u2poly(const TDivisor* src, ui64 polyu[3], ui64 polyv[2]);
 
-static void divisor_add(const TDivisor* src1, const TDivisor* src2, TDivisor* dst);
+void divisor_add(const TDivisor* src1, const TDivisor* src2, TDivisor* dst);
 
-static void divisor_mul(const TDivisor* src, ui64 mult, TDivisor* dst);
+void divisor_mul(const TDivisor* src, ui64 mult, TDivisor* dst);
 
-static void divisor_mul128(const TDivisor* src, ui64 mult_lo, ui64 mult_hi, TDivisor* dst);
+void divisor_mul128(const TDivisor* src, ui64 mult_lo, ui64 mult_hi, TDivisor* dst);
 
-static unsigned rol(unsigned x, int shift);
+unsigned rol(unsigned x, int shift);
 
-static void sha1_single_block(unsigned char input[64], unsigned char output[20]);
+void sha1_single_block(unsigned char input[64], unsigned char output[20]);
 
-static void Mix(unsigned char* buffer, size_t bufSize, const unsigned char* key, size_t keySize);
+void Mix(unsigned char* buffer, size_t bufSize, const unsigned char* key, size_t keySize);
 
-static void Unmix(unsigned char* buffer, size_t bufSize, const unsigned char* key, size_t keySize);
+void Unmix(unsigned char* buffer, size_t bufSize, const unsigned char* key, size_t keySize);
 
-static int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_id[49]);
+int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_id[49]);
 
 //#undef INTERFACE
 //#define INTERFACE ICOMLicenseAgent
@@ -92,7 +94,5 @@ static void GetIdFromSystem(HWND hDlg);
 static void PutIdToSystem(HWND hDlg);
 
 INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-static FILE* fDummyFile;
 
 #endif // XP_ACTIVATE32_H_

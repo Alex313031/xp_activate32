@@ -3,6 +3,9 @@
 #include "keygen.h"
 #include "utils.h"
 
+/* Global instance handle */
+HINSTANCE g_hInstance = NULL;
+
 static HICON hIcon[2];
 
 #define divisor_double(src, dst) divisor_add(src, src, dst)
@@ -943,31 +946,32 @@ static void PutIdToSystem(HWND hDlg) {
 INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
   int i;
   switch (uMsg) {
-  case WM_INITDIALOG:
-    for (i = 0; i < 2; i++)
-      SendMessage(hDlg, WM_SETICON, i, (LPARAM)hIcon[i]);
-    OnActivationIdChange(hDlg);
-    SendMessage(hDlg, DM_SETDEFID, 102, 0);
-    return TRUE;
-  case WM_CLOSE:
-    EndDialog(hDlg, 0);
-    return TRUE;
-  case WM_COMMAND:
-    switch (wParam) {
-    case IDCANCEL: // Esc pressed
-      EndDialog(hDlg, 0);
-      break;
-    case MAKEWPARAM(101, EN_CHANGE):
+    case WM_INITDIALOG:
+      for (i = 0; i < 2; i++) {
+        SendMessage(hDlg, WM_SETICON, i, (LPARAM)hIcon[i]);
+      }
       OnActivationIdChange(hDlg);
-      break;
-    case 102:
-      GetIdFromSystem(hDlg);
-      break;
-    case 104:
-      PutIdToSystem(hDlg);
-      break;
-    }
-    return TRUE;
+      SendMessage(hDlg, DM_SETDEFID, 102, 0);
+      return TRUE;
+    case WM_CLOSE:
+      EndDialog(hDlg, 0);
+      return TRUE;
+    case WM_COMMAND:
+      switch (wParam) {
+        case IDCANCEL: // Esc pressed
+          EndDialog(hDlg, 0);
+          break;
+        case MAKEWPARAM(101, EN_CHANGE):
+          OnActivationIdChange(hDlg);
+          break;
+        case 102:
+          GetIdFromSystem(hDlg);
+          break;
+        case 104:
+          PutIdToSystem(hDlg);
+          break;
+      }
+      return TRUE;
   }
   return FALSE;
 }
@@ -977,6 +981,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
              _In_ WCHAR *pCmdLine,
              _In_ INT nCmdShow) {
   UNREFERENCED_PARAMETER(hPrevInstance);
+  /* Assign global HINSTANCE */
+  g_hInstance = hInstance;
+  MSG Msg;
+  long err_status;
 
   // Allow and allocate conhost
   if (!AllocConsole()) {
@@ -991,10 +999,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
   if (cmdLine == nullptr || cmdLine == NULL) {
     std::wcerr << L"GetCommandLineW failed!" << std::endl;
     return 1;
+  } else {
+    std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
+    std::wcout << welcome_str << std::endl;
   }
 
-  std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
-  std::wcout << welcome_str << std::endl;
   INITCOMMONCONTROLSEX cc = {sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES};
   InitCommonControlsEx(&cc);
   int i;
@@ -1009,7 +1018,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
     hIcon[i] = getDialogIcon(false, 194, x, y);
   }
 
-  INT_PTR status = DialogBoxW(NULL, MAKEINTRESOURCE(100), NULL, &DialogProc);
+  // Create main window
+  INT_PTR main_dialog = DialogBoxW(g_hInstance, MAKEINTRESOURCE(100), NULL, &DialogProc);
+  err_status = static_cast<long>(main_dialog);
 
   for (i = 0; i < 2; i++) {
     DestroyIcon(hIcon[i]);
@@ -1023,6 +1034,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
     CoUninitialize();
   }
 
-  std::cout << "status = " << status << std::endl;
-  ExitProcess(status);
+  std::wcout << L"err_status = " << err_status << std::endl;
+  if (err_status != 0L) {
+    system("pause");
+  }
+  ExitProcess(err_status);
 }

@@ -19,14 +19,14 @@
 // Adhere to semver > semver.org
 #define MAJOR_VERSION 1
 #define MINOR_VERSION 0
-#define BUILD_VERSION 2
+#define BUILD_VERSION 3
 
 #define MAIN_TITLE L"XP_Activate32"
 
 #ifndef VERSION_STRING
  #define VERSION_STRING _VERSION(MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION)
  #define ABOUT_TITLE L"About XP_Activate32"
- #define ABOUT_VERSION L"xp_activate32 ver. 1.0.2"
+ #define ABOUT_VERSION L"xp_activate32 ver. 1.0.3"
  #define ABOUT_COPYRIGHT L"Copyright © 2025 Alex313031"
  #define LEGAL_COPYRIGHT L"© 2025"
 #endif // VERSION_STRING
