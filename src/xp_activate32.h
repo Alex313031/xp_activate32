@@ -31,7 +31,7 @@ typedef struct {
 #define ERR_UNKNOWN_VERSION 5
 #define ERR_UNLUCKY 6
 
-#define BAD 0xFFFFFFFFFFFFFFFFull
+#define BAD 0xFFFFFFFFFFFFFFFFULL
 
 #define CHARTYPE wchar_t
 
