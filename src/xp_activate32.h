@@ -24,12 +24,12 @@ typedef struct {
   ui64 v[2];
 } TDivisor;
 
-#define ERR_TOO_SHORT 1
-#define ERR_TOO_LARGE 2
-#define ERR_INVALID_CHARACTER 3
-#define ERR_INVALID_CHECK_DIGIT 4
-#define ERR_UNKNOWN_VERSION 5
-#define ERR_UNLUCKY 6
+#define ERR_TOO_SHORT IDS_WAITING_INPUT
+#define ERR_TOO_LARGE IDS_ID_TOO_LARGE
+#define ERR_INVALID_CHARACTER IDS_INVALID_CHAR
+#define ERR_INVALID_CHECK_DIGIT IDS_INVALID_CHECK
+#define ERR_UNKNOWN_VERSION IDS_UNKNOWN_ID
+#define ERR_UNLUCKY IDS_UNLUCKY_ID
 
 #define BAD 0xFFFFFFFFFFFFFFFFULL
 
@@ -64,6 +64,8 @@ int polynomial_div_monic(int adeg, ui64 a[], int bdeg, const ui64 b[], ui64* quo
 void polynomial_xgcd(int adeg, const ui64 a[3], int bdeg, const ui64 b[3], int* pgcddeg, ui64 gcd[3], int* pmult1deg, ui64 mult1[3], int* pmult2deg, ui64 mult2[3]);
 
 int u2poly(const TDivisor* src, ui64 polyu[3], ui64 polyv[2]);
+
+void divisor_double(const TDivisor* src, TDivisor* dst);
 
 void divisor_add(const TDivisor* src1, const TDivisor* src2, TDivisor* dst);
 

@@ -3,31 +3,33 @@
 #include "keygen.h"
 #include "utils.h"
 
-/* Global instance handle */
 HINSTANCE g_hInstance = NULL;
+HWND g_hMainDlg = NULL;
 
 static HICON hIcon[2];
 
-#define divisor_double(src, dst) divisor_add(src, src, dst)
+wchar_t strings[16][256];
 
-static ui64 residue_add(ui64 x, ui64 y) {
+ui64 residue_add(ui64 x, ui64 y) {
   ui64 z = x + y;
   //z = z - (z >= MOD ? MOD : 0);
-  if (z >= MOD)
+  if (z >= MOD) {
     z -= MOD;
+  }
   return z;
 }
 
-static ui64 residue_sub(ui64 x, ui64 y) {
+ui64 residue_sub(ui64 x, ui64 y) {
   ui64 z = x - y;
   //z += (x < y ? MOD : 0);
-  if (x < y)
+  if (x < y) {
     z += MOD;
+  }
   return z;
 }
 
 // copypasted from https://stackoverflow.com/questions/46870373/umul128-on-windows-32-bits
-static uint64_t __umul128(uint64_t multiplier, uint64_t multiplicand, uint64_t *product_hi) {
+uint64_t __umul128(uint64_t multiplier, uint64_t multiplicand, uint64_t *product_hi) {
   // multiplier   = ab = a * 2^32 + b
   // multiplicand = cd = c * 2^32 + d
   // ab * cd = a * c * 2^64 + (a * d + b * c) * 2^32 + b * d
@@ -53,7 +55,7 @@ static uint64_t __umul128(uint64_t multiplier, uint64_t multiplicand, uint64_t *
   return product_lo;
 }
 
-static ui64 ui128_quotient_mod(ui64 lo, ui64 hi) {
+ui64 ui128_quotient_mod(ui64 lo, ui64 hi) {
   // hi:lo * ceil(2**170/MOD) >> (64 + 64 + 42)
   ui64 prod1;
   __umul128(lo, 0x604fa6a1c6346a87, &prod1);
@@ -73,7 +75,7 @@ static ui64 ui128_quotient_mod(ui64 lo, ui64 hi) {
   return (prod3lo >> 42) | (prod3hi << 22);
 }
 
-static ui64 residue_mul(ui64 x, ui64 y) {
+ui64 residue_mul(ui64 x, ui64 y) {
 // * ceil(2**170/MOD) = 0x2d351 c6d04f8b|604fa6a1 c6346a87 for (p-1)*(p-1) max
   ui64 hi;
   ui64 lo = __umul128(x, y, &hi);
@@ -81,9 +83,10 @@ static ui64 residue_mul(ui64 x, ui64 y) {
   return lo - quotient * MOD;
 }
 
-static ui64 residue_pow(ui64 x, ui64 y) {
-  if (y == 0)
+ui64 residue_pow(ui64 x, ui64 y) {
+  if (y == 0) {
     return 1;
+  }
   ui64 cur = x;
   while (!(y & 1)) {
     cur = residue_mul(cur, cur);
@@ -92,13 +95,14 @@ static ui64 residue_pow(ui64 x, ui64 y) {
   ui64 res = cur;
   while ((y >>= 1) != 0) {
     cur = residue_mul(cur, cur);
-    if (y & 1)
+    if (y & 1) {
       res = residue_mul(res, cur);
+    }
   }
   return res;
 }
 
-static ui64 inverse(ui64 u, ui64 v) {
+ui64 inverse(ui64 u, ui64 v) {
   //assert(u);
   i64 tmp;
   i64 xu = 1, xv = 0;
@@ -112,18 +116,20 @@ static ui64 inverse(ui64 u, ui64 v) {
   return xu;
 }
 
-static ui64 residue_inv(ui64 x) {
+ui64 residue_inv(ui64 x) {
   return inverse(x, MOD);
   //{ return residue_pow(x, MOD - 2); }
 }
 
-static ui64 residue_sqrt(ui64 what) {
-  if (!what)
+ui64 residue_sqrt(ui64 what) {
+  if (!what) {
     return 0;
+  }
   ui64 g = NON_RESIDUE, z, y, r, x, b, t;
   ui64 e = 0, q = MOD - 1;
-  while (!(q & 1))
+  while (!(q & 1)) {
     e++, q >>= 1;
+  }
   z = residue_pow(g, q);
   y = z;
   r = e;
@@ -136,8 +142,9 @@ static ui64 residue_sqrt(ui64 what) {
       m++;
       b2 = residue_mul(b2, b2);
     } while (b2 != 1);
-    if (m == r)
+    if (m == r) {
       return BAD;
+    }
     t = residue_pow(y, 1 << (r - m - 1));
     y = residue_mul(t, t);
     r = m;
@@ -158,8 +165,9 @@ int find_divisor_v(TDivisor* d) {
   ui64 v1;
   ui64 f2[6];
   int i, j;
-  for (i = 0; i < 6; i++)
+  for (i = 0; i < 6; i++) {
     f2[i] = f[i];
+  }
   const ui64 u0 = d->u[0];
   const ui64 u1 = d->u[1];
   for (j = 4; j--; ) {
@@ -189,13 +197,15 @@ int find_divisor_v(TDivisor* d) {
     }
     ui64 sqr = residue_mul(residue_mul(f1, f1), residue_inv(residue_add(coeff1, coeff1)));
     v1 = residue_sqrt(sqr);
-    if (v1 == BAD)
+    if (v1 == BAD) {
       return 0;
+    }
   } else {
     ui64 d = residue_add(residue_mul(f0, f0), residue_mul(f1, residue_sub(residue_mul(f1, u0), residue_mul(f0, u1))));
     d = residue_sqrt(d);
-    if (d == BAD)
+    if (d == BAD) {
       return 0;
+    }
     d = residue_add(d, d);
     ui64 inv = residue_inv(coeff2);
     ui64 root = residue_mul(residue_add(coeff1, d), inv);
@@ -203,8 +213,9 @@ int find_divisor_v(TDivisor* d) {
     if (v1 == BAD) {
       root = residue_mul(residue_sub(coeff1, d), inv);
       v1 = residue_sqrt(root);
-      if (v1 == BAD)
+      if (v1 == BAD) {
         return 0;
+      }
     }
   }
   ui64 v0 = residue_mul(residue_add(f1, residue_mul(u1, residue_mul(v1, v1))), residue_inv(residue_add(v1, v1)));
@@ -214,40 +225,48 @@ int find_divisor_v(TDivisor* d) {
 }
 
 // generic short slow code
-static int polynomial_mul(int adeg, const ui64 a[], int bdeg, const ui64 b[], int resultprevdeg, ui64 result[]) {
-  if (adeg < 0 || bdeg < 0)
+int polynomial_mul(int adeg, const ui64 a[], int bdeg, const ui64 b[], int resultprevdeg, ui64 result[]) {
+  if (adeg < 0 || bdeg < 0) {
     return resultprevdeg;
+  }
   int i, j;
-  for (i = resultprevdeg + 1; i <= adeg + bdeg; i++)
+  for (i = resultprevdeg + 1; i <= adeg + bdeg; i++) {
     result[i] = 0;
+  }
   resultprevdeg = i - 1;
-  for (i = 0; i <= adeg; i++)
-    for (j = 0; j <= bdeg; j++)
+  for (i = 0; i <= adeg; i++) {
+    for (j = 0; j <= bdeg; j++) {
       result[i + j] = residue_add(result[i + j], residue_mul(a[i], b[j]));
-  while (resultprevdeg >= 0 && result[resultprevdeg] == 0)
+    }
+  }
+  while (resultprevdeg >= 0 && result[resultprevdeg] == 0) {
     --resultprevdeg;
+  }
   return resultprevdeg;
 }
 
-static int polynomial_div_monic(int adeg, ui64 a[], int bdeg, const ui64 b[], ui64* quotient) {
+int polynomial_div_monic(int adeg, ui64 a[], int bdeg, const ui64 b[], ui64* quotient) {
   assert(bdeg >= 0);
   assert(b[bdeg] == 1);
   int i, j;
   for (i = adeg - bdeg; i >= 0; i--) {
     ui64 q = a[i + bdeg];
-    if (quotient)
+    if (quotient) {
       quotient[i] = q;
-    for (j = 0; j < bdeg; j++)
+    }
+    for (j = 0; j < bdeg; j++) {
       a[i + j] = residue_sub(a[i + j], residue_mul(q, b[j]));
+    }
     a[i + j] = 0;
   }
   i += bdeg;
-  while (i >= 0 && a[i] == 0)
+  while (i >= 0 && a[i] == 0) {
     i--;
+  }
   return i;
 }
 
-static void polynomial_xgcd(int adeg, const ui64 a[3], int bdeg, const ui64 b[3], int* pgcddeg, ui64 gcd[3], int* pmult1deg, ui64 mult1[3], int* pmult2deg, ui64 mult2[3]) {
+void polynomial_xgcd(int adeg, const ui64 a[3], int bdeg, const ui64 b[3], int* pgcddeg, ui64 gcd[3], int* pmult1deg, ui64 mult1[3], int* pmult2deg, ui64 mult2[3]) {
   int sdeg = -1;
   ui64 s[3] = {0, 0, 0};
   int mult1deg = 0;
@@ -285,24 +304,32 @@ static void polynomial_xgcd(int adeg, const ui64 a[3], int bdeg, const ui64 b[3]
     ui64 mult = residue_mul(gcd[gcddeg], residue_inv(r[rdeg]));
     // quotient = mult * x**delta
     assert(rdeg + delta < 3);
-    for (int i = 0; i <= rdeg; i++)
+    for (int i = 0; i <= rdeg; i++) {
       gcd[i + delta] = residue_sub(gcd[i + delta], residue_mul(mult, r[i]));
-    while (gcddeg >= 0 && gcd[gcddeg] == 0)
+    }
+    while (gcddeg >= 0 && gcd[gcddeg] == 0) {
       gcddeg--;
+    }
     assert(sdeg + delta < 3);
-    for (int i = 0; i <= sdeg; i++)
+    for (int i = 0; i <= sdeg; i++) {
       mult1[i + delta] = residue_sub(mult1[i + delta], residue_mul(mult, s[i]));
-    if (mult1deg < sdeg + delta)
+    }
+    if (mult1deg < sdeg + delta) {
       mult1deg = sdeg + delta;
-    while (mult1deg >= 0 && mult1[mult1deg] == 0)
+    }
+    while (mult1deg >= 0 && mult1[mult1deg] == 0) {
       mult1deg--;
+    }
     assert(tdeg + delta < 3);
-    for (int i = 0; i <= tdeg; i++)
+    for (int i = 0; i <= tdeg; i++) {
       mult2[i + delta] = residue_sub(mult2[i + delta], residue_mul(mult, t[i]));
-    if (mult2deg < tdeg + delta)
+    }
+    if (mult2deg < tdeg + delta) {
       mult2deg = tdeg + delta;
-    while (mult2deg >= 0 && mult2[mult2deg] == 0)
+    }
+    while (mult2deg >= 0 && mult2[mult2deg] == 0) {
       mult2deg--;
+    }
   }
   // d1 = gcd, e1 = mult1, e2 = mult2
   *pgcddeg = gcddeg;
@@ -310,7 +337,7 @@ static void polynomial_xgcd(int adeg, const ui64 a[3], int bdeg, const ui64 b[3]
   *pmult2deg = mult2deg;
 }
 
-static int u2poly(const TDivisor* src, ui64 polyu[3], ui64 polyv[2]) {
+int u2poly(const TDivisor* src, ui64 polyu[3], ui64 polyv[2]) {
   if (src->u[1] != BAD) {
     polyu[0] = src->u[0];
     polyu[1] = src->u[1];
@@ -332,7 +359,11 @@ static int u2poly(const TDivisor* src, ui64 polyu[3], ui64 polyv[2]) {
   return 0;
 }
 
-static void divisor_add(const TDivisor* src1, const TDivisor* src2, TDivisor* dst) {
+void divisor_double(const TDivisor* src, TDivisor* dst) {
+  return divisor_add(src, src, dst);
+}
+
+void divisor_add(const TDivisor* src1, const TDivisor* src2, TDivisor* dst) {
   ui64 u1[3], u2[3], v1[2], v2[2];
   int u1deg = u2poly(src1, u1, v1);
   int u2deg = u2poly(src2, u2, v2);
@@ -353,13 +384,16 @@ static void divisor_add(const TDivisor* src1, const TDivisor* src2, TDivisor* ds
   assert(ddeg >= 0);
   ui64 dmult = residue_inv(d[ddeg]);
   int i;
-  for (i = 0; i < ddeg; i++)
+  for (i = 0; i < ddeg; i++) {
     d[i] = residue_mul(d[i], dmult);
+  }
   d[i] = 1;
-  for (i = 0; i <= c1deg; i++)
+  for (i = 0; i <= c1deg; i++) {
     c1[i] = residue_mul(c1[i], dmult);
-  for (i = 0; i <= c2deg; i++)
+  }
+  for (i = 0; i <= c2deg; i++) {
     c2[i] = residue_mul(c2[i], dmult);
+  }
   ui64 u[5];
   int udeg = polynomial_mul(u1deg, u1, u2deg, u2, -1, u);
   // u is monic
@@ -372,8 +406,9 @@ static void divisor_add(const TDivisor* src1, const TDivisor* src2, TDivisor* ds
   tmpdeg = polynomial_mul(e1deg, e1, 1, v, -1, tmp);
   vdeg = polynomial_mul(u1deg, u1, tmpdeg, tmp, -1, v);
   vdeg = polynomial_mul(d1deg, d1, 1, v1, vdeg, v);
-  for (i = 0; i <= vdeg; i++)
+  for (i = 0; i <= vdeg; i++) {
     v[i] = residue_mul(v[i], c1[0]);
+  }
   memcpy(tmp, f, 6 * sizeof(f[0]));
   tmpdeg = 5;
   tmpdeg = polynomial_mul(1, v1, 1, v2, tmpdeg, tmp);
@@ -395,22 +430,27 @@ static void divisor_add(const TDivisor* src1, const TDivisor* src2, TDivisor* ds
     assert(vdeg <= 3);
     // u' = monic((f-v^2)/u), v'=-v mod u'
     tmpdeg = polynomial_mul(vdeg, v, vdeg, v, -1, tmp);
-    for (i = 0; i <= tmpdeg && i <= 5; i++)
+    for (i = 0; i <= tmpdeg && i <= 5; i++) {
       tmp[i] = residue_sub(f[i], tmp[i]);
-    for (; i <= tmpdeg; i++)
+    }
+    for (; i <= tmpdeg; i++) {
       tmp[i] = residue_sub(0, tmp[i]);
-    for (; i <= 5; i++)
+    }
+    for (; i <= 5; i++) {
       tmp[i] = f[i];
+    }
     tmpdeg = i - 1;
     ui64 udiv[5];
     polynomial_div_monic(tmpdeg, tmp, udeg, u, udiv);
     udeg = tmpdeg - udeg;
     ui64 mult = residue_inv(udiv[udeg]);
-    for (i = 0; i < udeg; i++)
+    for (i = 0; i < udeg; i++) {
       u[i] = residue_mul(udiv[i], mult);
+    }
     u[i] = 1;
-    for (i = 0; i <= vdeg; i++)
+    for (i = 0; i <= vdeg; i++) {
       v[i] = residue_sub(0, v[i]);
+    }
     vdeg = polynomial_div_monic(vdeg, v, udeg, u, NULL);
   }
   if (udeg == 2) {
@@ -432,7 +472,7 @@ static void divisor_add(const TDivisor* src1, const TDivisor* src2, TDivisor* ds
   }
 }
 
-static void divisor_mul(const TDivisor* src, ui64 mult, TDivisor* dst) {
+void divisor_mul(const TDivisor* src, ui64 mult, TDivisor* dst) {
   if (mult == 0) {
     dst->u[0] = BAD;
     dst->u[1] = BAD;
@@ -448,12 +488,13 @@ static void divisor_mul(const TDivisor* src, ui64 mult, TDivisor* dst) {
   *dst = cur;
   while ((mult >>= 1) != 0) {
     divisor_double(&cur, &cur);
-    if (mult & 1)
+    if (mult & 1) {
       divisor_add(dst, &cur, dst);
+    }
   }
 }
 
-static void divisor_mul128(const TDivisor* src, ui64 mult_lo, ui64 mult_hi, TDivisor* dst) {
+void divisor_mul128(const TDivisor* src, ui64 mult_lo, ui64 mult_hi, TDivisor* dst) {
   if (mult_lo == 0 && mult_hi == 0) {
     dst->u[0] = BAD;
     dst->u[1] = BAD;
@@ -465,30 +506,34 @@ static void divisor_mul128(const TDivisor* src, ui64 mult_lo, ui64 mult_hi, TDiv
   while (!(mult_lo & 1)) {
     divisor_double(&cur, &cur);
     mult_lo >>= 1;
-    if (mult_hi & 1)
+    if (mult_hi & 1) {
       mult_lo |= (1ULL << 63);
+    }
     mult_hi >>= 1;
   }
   *dst = cur;
   for (;;) {
     mult_lo >>= 1;
-    if (mult_hi & 1)
+    if (mult_hi & 1) {
       mult_lo |= (1ULL << 63);
+    }
     mult_hi >>= 1;
-    if (mult_lo == 0 && mult_hi == 0)
+    if (mult_lo == 0 && mult_hi == 0) {
       break;
+    }
     divisor_double(&cur, &cur);
-    if (mult_lo & 1)
+    if (mult_lo & 1) {
       divisor_add(dst, &cur, dst);
+    }
   }
 }
 
-static unsigned rol(unsigned x, int shift) {
+unsigned rol(unsigned x, int shift) {
   //assert(shift > 0 && shift < 32);
   return (x << shift) | (x >> (32 - shift));
 }
 
-static void sha1_single_block(unsigned char input[64], unsigned char output[20]) {
+void sha1_single_block(unsigned char input[64], unsigned char output[20]) {
   unsigned a, b, c, d, e;
   a = 0x67452301;
   b = 0xEFCDAB89;
@@ -497,10 +542,12 @@ static void sha1_single_block(unsigned char input[64], unsigned char output[20])
   e = 0xC3D2E1F0;
   unsigned w[80];
   size_t i;
-  for (i = 0; i < 16; i++)
+  for (i = 0; i < 16; i++) {
     w[i] = input[4*i] << 24 | input[4*i+1] << 16 | input[4*i+2] << 8 | input[4*i+3];
-  for (i = 16; i < 80; i++)
+  }
+  for (i = 16; i < 80; i++) {
     w[i] = rol(w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16], 1);
+  }
   for (i = 0; i < 20; i++) {
     unsigned tmp = rol(a, 5) + ((b & c) | (~b & d)) + e + w[i] + 0x5A827999;
     e = d;
@@ -545,7 +592,7 @@ static void sha1_single_block(unsigned char input[64], unsigned char output[20])
   output[16] = e >> 24; output[17] = e >> 16; output[18] = e >> 8; output[19] = e;
 }
 
-static void Mix(unsigned char* buffer, size_t bufSize, const unsigned char* key, size_t keySize) {
+void Mix(unsigned char* buffer, size_t bufSize, const unsigned char* key, size_t keySize) {
   unsigned char sha1_input[64];
   unsigned char sha1_result[20];
   size_t half = bufSize / 2;
@@ -560,8 +607,9 @@ static void Mix(unsigned char* buffer, size_t bufSize, const unsigned char* key,
     sha1_input[sizeof(sha1_input) - 2] = static_cast<unsigned char>((half + keySize)) * 8 / 0x100;
     sha1_single_block(sha1_input, sha1_result);
     size_t i;
-    for (i = half & ~3; i < half; i++)
+    for (i = half & ~3; i < half; i++) {
       sha1_result[i] = sha1_result[i + 4 - (half & 3)];
+    }
     for (i = 0; i < half; i++) {
       unsigned char tmp = buffer[i + half];
       buffer[i + half] = buffer[i] ^ sha1_result[i];
@@ -570,7 +618,7 @@ static void Mix(unsigned char* buffer, size_t bufSize, const unsigned char* key,
   }
 }
 
-static void Unmix(unsigned char* buffer, size_t bufSize, const unsigned char* key, size_t keySize) {
+void Unmix(unsigned char* buffer, size_t bufSize, const unsigned char* key, size_t keySize) {
   unsigned char sha1_input[64];
   unsigned char sha1_result[20];
   size_t half = bufSize / 2;
@@ -585,8 +633,9 @@ static void Unmix(unsigned char* buffer, size_t bufSize, const unsigned char* ke
     sha1_input[sizeof(sha1_input) - 2] = static_cast<unsigned char>((half + keySize)) * 8 / 0x100;
     sha1_single_block(sha1_input, sha1_result);
     size_t i;
-    for (i = half & ~3; i < half; i++)
+    for (i = half & ~3; i < half; i++) {
       sha1_result[i] = sha1_result[i + 4 - (half & 3)];
+    }
     for (i = 0; i < half; i++) {
       unsigned char tmp = buffer[i];
       buffer[i] = buffer[i + half] ^ sha1_result[i];
@@ -595,7 +644,7 @@ static void Unmix(unsigned char* buffer, size_t bufSize, const unsigned char* ke
   }
 }
 
-static int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_id[49]) {
+int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_id[49]) {
   unsigned char installation_id[19]; // 10**45 < 256**19
   size_t installation_id_len = 0;
   const CHARTYPE* p = installation_id_str;
@@ -603,16 +652,20 @@ static int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_i
   unsigned check = 0;
   size_t i;
   for (; *p; p++) {
-    if (*p == ' ' || *p == '-')
+    if (*p == ' ' || *p == '-') {
       continue;
+    }
     int d = *p - '0';
-    if (d < 0 || d > 9)
+    if (d < 0 || d > 9) {
       return ERR_INVALID_CHARACTER;
+    }
     if (count == 5 || p[1] == 0) {
-      if (!count)
+      if (!count) {
         return (totalCount == 45) ? ERR_TOO_LARGE : ERR_TOO_SHORT;
-      if (d != check % 7)
+      }
+      if (d != check % 7) {
         return (count < 5) ? ERR_TOO_SHORT : ERR_INVALID_CHECK_DIGIT;
+      }
       check = 0;
       count = 0;
       continue;
@@ -620,8 +673,9 @@ static int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_i
     check += (count % 2 ? d * 2 : d);
     count++;
     totalCount++;
-    if (totalCount > 45)
+    if (totalCount > 45) {
       return ERR_TOO_LARGE;
+    }
     unsigned char carry = d;
     for (i = 0; i < installation_id_len; i++) {
       unsigned x = installation_id[i] * 10 + carry;
@@ -633,14 +687,17 @@ static int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_i
       installation_id[installation_id_len++] = carry;
     }
   }
-  if (totalCount != 41 && totalCount < 45)
+  if (totalCount != 41 && totalCount < 45) {
     return ERR_TOO_SHORT;
-  for (; installation_id_len < sizeof(installation_id); installation_id_len++)
+  }
+  for (; installation_id_len < sizeof(installation_id); installation_id_len++) {
     installation_id[installation_id_len] = 0;
+  }
   static const unsigned char iid_key[4] = {0x6A, 0xC8, 0x5E, 0xD4};
   Unmix(installation_id, totalCount == 41 ? 17 : 19, iid_key, 4);
-  if (installation_id[18] >= 0x10)
+  if (installation_id[18] >= 0x10) {
     return ERR_UNKNOWN_VERSION;
+  }
 
 #pragma pack(push, 1)
   struct {
@@ -656,9 +713,10 @@ static int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_i
   unsigned productId3 = (parsed.ProductIDLow >> 27) & ((1 << 25) - 1);
   unsigned version = (parsed.ProductIDLow >> 52) & 7;
   unsigned productId4 = (parsed.ProductIDLow >> 55) | (parsed.ProductIDHigh << 9);
-  if (version != (totalCount == 41 ? 4 : 5))
+  if (version != (totalCount == 41 ? 4 : 5)) {
     return ERR_UNKNOWN_VERSION;
-  //printf("Product ID: %05u-%03u-%07u-%05u\n", productId1, productId2, productId3, productId4);
+  }
+  printf("Product ID: %05u-%03u-%07u-%05u\n", productId1, productId2, productId3, productId4);
 
   unsigned char keybuf[16];
   memcpy(keybuf, &parsed.HardwareID, 8);
@@ -684,11 +742,13 @@ static int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_i
     x2++;
     d.u[0] = residue_sub(residue_mul(x1, x1), residue_mul(NON_RESIDUE, residue_mul(x2, x2)));
     d.u[1] = residue_add(x1, x1);
-    if (find_divisor_v(&d))
+    if (find_divisor_v(&d)) {
       break;
+    }
   }
-  if (attempt > 0x80)
+  if (attempt > 0x80) {
     return ERR_UNLUCKY;
+  }
   divisor_mul128(&d, 0x04e21b9d10f127c1, 0x40da7c36d44c, &d);
   union {
     struct {
@@ -753,8 +813,9 @@ static int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_i
   assert(e.encoded[0] == 0 && e.encoded[1] == 0 && e.encoded[2] == 0 && e.encoded[3] == 0);
   CHARTYPE* q = confirmation_id;
   for (i = 0; i < 7; i++) {
-    if (i)
+    if (i) {
       *q++ = '-';
+    }
     unsigned char* p = decimal + i*5;
     q[0] = p[0] + '0';
     q[1] = p[1] + '0';
@@ -767,8 +828,6 @@ static int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_i
   *q++ = 0;
   return 0;
 }
-
-static wchar_t strings[14][256];
 
 #undef INTERFACE
 #define INTERFACE ICOMLicenseAgent
@@ -862,7 +921,7 @@ static BOOL LoadLicenseManager(HWND hParentForMsgBox) {
   if (!ComInitialized) {
     HRESULT status = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
     if (FAILED(status)) {
-      MessageBox(hParentForMsgBox, strings[10], strings[8], MB_ICONSTOP);
+      MessageBox(hParentForMsgBox, strings[IDS_FAILED_INITIALIZE], strings[IDS_ERROR], MB_ICONSTOP);
       return FALSE;
     }
     ComInitialized = TRUE;
@@ -881,20 +940,20 @@ static BOOL LoadLicenseManager(HWND hParentForMsgBox) {
       }
     }
     if (!good) {
-      MessageBox(hParentForMsgBox, strings[10], strings[8], MB_ICONSTOP);
+      MessageBox(hParentForMsgBox, strings[IDS_FAILED_INITIALIZE], strings[IDS_ERROR], MB_ICONSTOP);
       return FALSE;
     }
   }
   ULONG dwWPALeft = 0, dwEvalLeft = 0;
   HRESULT status = LicenseAgent->GetExpirationInfo(&dwWPALeft, &dwEvalLeft);
   if (FAILED(status)) {
-    MessageBox(hParentForMsgBox, strings[11], strings[8], MB_ICONSTOP);
+    MessageBox(hParentForMsgBox, strings[IDS_FAILED_CHECK], strings[IDS_ERROR], MB_ICONSTOP);
     LicenseAgent->Release();
     LicenseAgent = NULL;
     return FALSE;
   }
   if (dwWPALeft == 0x7FFFFFFF) {
-    MessageBox(hParentForMsgBox, strings[12], strings[9], MB_ICONWARNING);
+    MessageBox(hParentForMsgBox, strings[IDS_ALREADY_ACTIVATED], strings[IDS_INFORMATION], MB_ICONINFORMATION);
     LicenseAgent->Release();
     LicenseAgent = NULL;
     return FALSE;
@@ -903,15 +962,16 @@ static BOOL LoadLicenseManager(HWND hParentForMsgBox) {
 }
 
 static void GetIdFromSystem(HWND hDlg) {
-  if (!LoadLicenseManager(hDlg))
+  if (!LoadLicenseManager(hDlg)) {
     return;
-  SetDlgItemText(hDlg, 103, strings[7]);
+  }
+  SetDlgItemText(hDlg, 103, strings[IDS_TALKING_TO_SYS]);
   EnableWindow(GetDlgItem(hDlg, 102), FALSE);
   UpdateWindow(hDlg);
   BSTR installationId = NULL;
   HRESULT status = LicenseAgent->GenerateInstallationId(&installationId);
   if (FAILED(status) || !installationId) {
-    MessageBox(hDlg, strings[13], strings[8], MB_ICONSTOP);
+    MessageBox(hDlg, strings[IDS_LIC_MAN_FAILED], strings[IDS_ERROR], MB_ICONSTOP);
   } else {
     SetDlgItemText(hDlg, 101, installationId);
     SysFreeString(installationId);
@@ -921,12 +981,13 @@ static void GetIdFromSystem(HWND hDlg) {
 }
 
 static void PutIdToSystem(HWND hDlg) {
-  if (!LoadLicenseManager(hDlg))
+  if (!LoadLicenseManager(hDlg)) {
     return;
+  }
   ULONG dwRetCode;
   wchar_t confirmationId[256];
   GetDlgItemText(hDlg, 103, confirmationId, sizeof(confirmationId) / sizeof(confirmationId[0]));
-  SetDlgItemText(hDlg, 103, strings[7]);
+  SetDlgItemText(hDlg, 103, strings[IDS_TALKING_TO_SYS]);
   EnableWindow(GetDlgItem(hDlg, 102), FALSE);
   EnableWindow(GetDlgItem(hDlg, 104), FALSE);
   UpdateWindow(hDlg);
@@ -937,14 +998,15 @@ static void PutIdToSystem(HWND hDlg) {
   EnableWindow(GetDlgItem(hDlg, 104), TRUE);
   SetDlgItemText(hDlg, 103, confirmationId);
   if (FAILED(status) || dwRetCode) {
-    MessageBox(hDlg, strings[13], strings[8], MB_ICONSTOP);
+    MessageBox(hDlg, strings[IDS_LIC_MAN_FAILED], strings[IDS_ERROR], MB_ICONSTOP);
     return;
   }
-  MessageBox(hDlg, strings[0], strings[9], MB_ICONINFORMATION);
+  MessageBox(hDlg, strings[IDS_SUCC_ACTIVATION], strings[IDS_INFORMATION], MB_ICONINFORMATION);
 }
 
 INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
   int i;
+  g_hMainDlg = hDlg;
   switch (uMsg) {
     case WM_INITDIALOG:
       for (i = 0; i < 2; i++) {
@@ -999,16 +1061,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
   if (cmdLine == nullptr || cmdLine == NULL) {
     std::wcerr << L"GetCommandLineW failed!" << std::endl;
     return 1;
-  } else {
-    std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
-    std::wcout << welcome_str << std::endl;
   }
 
   INITCOMMONCONTROLSEX cc = {sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES};
   InitCommonControlsEx(&cc);
   int i;
 
-  for (i = 0; i < 14; i++) {
+  for (i = 0; i < 16; i++) {
     LoadString(NULL, i, strings[i], sizeof(strings[i]) / sizeof(strings[i][0]));
   }
 
@@ -1017,6 +1076,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
     int y = GetSystemMetrics(i ? SM_CYICON : SM_CYSMICON);
     hIcon[i] = getDialogIcon(false, 194, x, y);
   }
+
+  std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
+  std::wcout << welcome_str << std::endl;
+  std::cout << "Windows Version: " << GetOSName() << std::endl;
+  std::cout << "WinVer: " << WinVer << std::endl;
 
   // Create main window
   INT_PTR main_dialog = DialogBoxW(g_hInstance, MAKEINTRESOURCE(100), NULL, &DialogProc);

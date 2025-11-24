@@ -2,6 +2,8 @@
 //
 #include "resource.h"
 
+#pragma code_page(65001) // UTF-8
+
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -14,8 +16,6 @@
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
-
-#pragma code_page(65001) // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ BEGIN
     "\0"
 END
 
-#endif    // APSTUDIO_INVOKED
+#endif  // APSTUDIO_INVOKED
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -58,9 +58,9 @@ VS_VERSION_INFO VERSIONINFO
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS VS_FF_DEBUG // 0x00000010L
-#else
+#else // Release mode
  FILEFLAGS 0x00000000L // Normal?
-#endif
+#endif  // _DEBUG
  // Windows NT
  FILEOS VOS_NT_WINDOWS32 // 0x00040004L
  FILETYPE VFT_APP // 0x00000001L
@@ -116,10 +116,10 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CTEXT           "Код установки:", -1, 2, 11, 75, 10
     EDITTEXT        101, 77, 10, 250, 12, ES_CENTER | ES_AUTOHSCROLL
-    PUSHBUTTON      "Спросить у системы", 102, 330, 10, 74, 12
+    PUSHBUTTON      "Получить Код из системы", 102, 330, 10, 74, 12
     CTEXT           "Код подтверждения:", -1, 2, 25, 75, 10
     EDITTEXT        103, 77, 24, 250, 12, ES_CENTER | ES_AUTOHSCROLL | ES_READONLY
-    PUSHBUTTON      "Сказать системе", 104, 330, 24, 74, 12
+    PUSHBUTTON      "Активировать!", 104, 330, 24, 74, 12
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -129,23 +129,25 @@ END
 
 STRINGTABLE
 BEGIN
-    0                       "Успешная активация!"
-    1                       "жду код установки..."
-    2                       "код слишком длинный"
-    3                       "неправильный символ"
-    4                       "ошибка в проверочной цифре"
-    5                       "неизвестная версия кода"
-    6                       "ну очень невезучий код..."
-    7                       "говорю с системой..."
-    8                       "Ошибка"
-    9                       "Информация"
-    10                      "Не получилось инициализировать менеджер лицензий"
-    11                      "Не получилось проверить статус активации"
-    12                      "Менеджер лицензий считает систему уже активированной"
-    13                      "Менеджер лицензий вернул ошибку"
+    IDS_SUCC_ACTIVATION     "Успешная активация!"
+    IDS_WAITING_INPUT       "жду код установки..."
+    IDS_ID_TOO_LARGE        "код слишком длинный"
+    IDS_INVALID_CHAR        "неправильный символ!"
+    IDS_INVALID_CHECK       "ошибка в проверочной цифре!"
+    IDS_UNKNOWN_ID          "неизвестная версия кода"
+    IDS_UNLUCKY_ID          "ну очень невезучий код..."
+    IDS_TALKING_TO_SYS      "говорю с системой..."
+    IDS_ERROR               "Ошибка"
+    IDS_INFORMATION         "Информация"
+    IDS_FAILED_INITIALIZE   "Не получилось инициализировать менеджер лицензий"
+    IDS_FAILED_CHECK        "Не получилось проверить статус активации"
+    IDS_ALREADY_ACTIVATED   "Менеджер лицензий считает систему уже активированной"
+    IDS_LIC_MAN_FAILED      "Менеджер лицензий вернул ошибку"
+    IDS_GETVER_ERR          "RtlGetVersion returned nullptr in ntdll.dll!"
+    IDS_ABOUT_TITLE         ABOUT_TITLE
 END
 
-#endif    // Russian (Russia) resources
+#endif  // Russian (Russia) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -180,23 +182,26 @@ END
 
 STRINGTABLE
 BEGIN
-    0                       "Successful Activation!"
-    1                       "Waiting for input..."
-    2                       "ID is too large!"
-    3                       "Invalid character!"
-    4                       "Invalid check digit!"
-    5                       "Unknown version of ID"
-    6                       "This ID is really unlucky..."
-    7                       "Talking to the system..."
-    8                       "Error!"
-    9                       "Information"
-    10                      "Failed to initialize the license manager!"
-    11                      "Failed to check activation status..."
-    12                      "License manager reports that the system is already activated."
-    13                      "License manager has failed!"
+    IDS_SUCC_ACTIVATION     "Successful Activation!"
+    IDS_WAITING_INPUT       "Waiting for input..."
+    IDS_ID_TOO_LARGE        "ID is too large!"
+    IDS_INVALID_CHAR        "Invalid character!"
+    IDS_INVALID_CHECK       "Invalid check digit!"
+    IDS_UNKNOWN_ID          "Unknown version of ID"
+    IDS_UNLUCKY_ID          "This ID is really unlucky..."
+    IDS_TALKING_TO_SYS      "Talking to the system..."
+    IDS_ERROR               "Error!"
+    IDS_INFORMATION         "Information"
+    IDS_FAILED_INITIALIZE   "Failed to initialize the license manager!"
+    IDS_FAILED_CHECK        "Failed to check activation status..."
+    IDS_ALREADY_ACTIVATED   "License manager reports that the system is already activated."
+    IDS_LIC_MAN_FAILED      "License manager has failed!"
+    IDS_GETVER_ERR          "RtlGetVersion returned nullptr in ntdll.dll!"
+    IDS_ABOUT_TITLE         ABOUT_TITLE
 END
 
-#endif    // English resources
+#endif  // English resources
+
 /////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////

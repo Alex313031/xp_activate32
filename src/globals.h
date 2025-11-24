@@ -9,6 +9,9 @@
 // Global instance handle
 extern HINSTANCE g_hInstance;
 
+// Main window handle
+extern HWND g_hMainDlg;
+
 // This Windows version
 extern std::string WinVer;
 

@@ -10,6 +10,10 @@
 
 #define assert(x) /*nothing*/
 
+#ifndef __FUNC__
+ #define __FUNC__ __func__
+#endif // __FUNC__
+
 typedef int64_t i64;
 typedef uint64_t ui64;
 
@@ -17,7 +21,7 @@ typedef uint64_t ui64;
 
 #define NON_RESIDUE 43
 
-static const ui64 f[6] = {0, 0x21840136C85381ULL, 0x44197B83892AD0ULL, 0x1400606322B3B04ULL, 0x1400606322B3B04ULL, 1};
+const ui64 f[6] = {0, 0x21840136C85381ULL, 0x44197B83892AD0ULL, 0x1400606322B3B04ULL, 0x1400606322B3B04ULL, 1};
 
 static const CLSID licdllCLSID = {0xACADF079, 0xCBCD, 0x4032, {0x83, 0xF2, 0xFA, 0x47, 0xC4, 0xDB, 0x09, 0x6F}};
 static const IID licenseAgentIID = {0xB8CBAD79, 0x3F1F, 0x481A, {0xBB, 0x0C, 0xE7, 0xBB, 0xD7, 0x7B, 0xDD, 0xD1}};

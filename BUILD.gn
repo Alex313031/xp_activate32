@@ -42,14 +42,18 @@ source_set("xp_activate32_sources") {
   sources = [
     "src/constants.h",
     "src/framework.h",
-    "src/keygen.cc",
+    "src/globals.h",
     "src/keygen.h",
     "src/resource.h",
+    "src/utils.h",
+    "src/xp_activate32.h",
+  ]
+
+  sources += [
+    "src/keygen.cc",
     "src/resource.rc",
     "src/utils.cc",
-    "src/utils.h",
     "src/xp_activate32.cc",
-    "src/xp_activate32.h",
   ]
 }
 
