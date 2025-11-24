@@ -7,12 +7,12 @@ import("//build/config/win/manifest.gni")
 # Main executable
 executable("xp_activate32") {
   configs -= [
-    #"//build/config/win:console",
-    #"//build/config/win:nominmax",
+    "//build/config/win:console",
+    "//build/config/win:nominmax",
   ]
 
   configs += [
-    #"//build/config/win:windowed",
+    "//build/config/win:windowed",
     ":xp_activate32_config",
   ]
 
@@ -32,7 +32,7 @@ source_set("xp_activate32_sources") {
   configs -= [ "//build/config/win:nominmax", ]
 
   # Must explicitly set this for sources
-  #configs += [ "//build/config/win:windowed", ]
+  configs += [ "//build/config/win:windowed", ]
 
   configs += [
     ":xp_activate32_config",

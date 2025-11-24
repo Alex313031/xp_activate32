@@ -972,7 +972,27 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
   return FALSE;
 }
 
-int main() {
+int WINAPI wWinMain(_In_ HINSTANCE hInstance,
+             _In_opt_ HINSTANCE hPrevInstance,
+             _In_ WCHAR *pCmdLine,
+             _In_ INT nCmdShow) {
+  UNREFERENCED_PARAMETER(hPrevInstance);
+
+  // Allow and allocate conhost
+  if (!AllocConsole()) {
+    return 1;
+  }
+  // File handler pointer to a dummy file, possibly an actual logfile
+  FILE* fNonExistFile = fDummyFile;
+  freopen_s(&fNonExistFile, "CONOUT$", "w", stdout);
+  freopen_s(&fNonExistFile, "CONOUT$", "w", stderr);
+
+  LPWSTR cmdLine = GetCommandLineW();
+  if (cmdLine == nullptr || cmdLine == NULL) {
+    std::wcerr << L"GetCommandLineW failed!" << std::endl;
+    return 1;
+  }
+
   std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
   std::wcout << welcome_str << std::endl;
   INITCOMMONCONTROLSEX cc = {sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES};
@@ -989,7 +1009,7 @@ int main() {
     hIcon[i] = getDialogIcon(false, 194, x, y);
   }
 
-  INT_PTR status = DialogBox(NULL, MAKEINTRESOURCE(100), NULL, &DialogProc);
+  INT_PTR status = DialogBoxW(NULL, MAKEINTRESOURCE(100), NULL, &DialogProc);
 
   for (i = 0; i < 2; i++) {
     DestroyIcon(hIcon[i]);
