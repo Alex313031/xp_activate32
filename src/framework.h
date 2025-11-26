@@ -40,11 +40,9 @@
 #endif // not __MINGW32__
 
 #include <windows.h>
-#include <combaseapi.h>
 #include <commctrl.h>
 #include <commdlg.h>
 #include <tchar.h>
-
 #include <iostream>
 #include <sstream>
 #include <string>

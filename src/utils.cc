@@ -122,9 +122,9 @@ float getWinNTVersion() {
 }
 
 std::wstring GetWinVersion() {
-  std::string ver = GetOSName();
-  std::wstring wver = L"1.0";
+  const std::string ver = GetOSName();
   WinVer = ver;
+  std::wstring wver = stringToWstring(WinVer);
   return wver;
 }
 

@@ -17,6 +17,7 @@
 
 #include "constants.h"
 #include "framework.h"
+#include "strings.h"
 
 extern wchar_t strings[16][256];
 
