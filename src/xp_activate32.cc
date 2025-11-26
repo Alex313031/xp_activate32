@@ -1077,6 +1077,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
   std::wcout << welcome_str << std::endl;
   std::cout << "Windows Version: " << GetOSName() << std::endl;
+  std::wcout << L"GetWinVersion() = " << GetWinVersion() << std::endl;
+  std::cout << L"GetNTString() = " << GetNTString() << std::endl;
   std::cout << "WinVer: " << WinVer << std::endl;
 
   // Create main window
