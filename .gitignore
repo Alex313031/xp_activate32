@@ -16,6 +16,9 @@ Thumbs.db
 *.sln.docstates
 
 # Built Files
+*.a
+*.d
+*.o
 *.obj
 *.pdb
 *.res
@@ -25,3 +28,4 @@ Thumbs.db
 /Debug/
 /Release/
 /release/
+xp_activate32.exe

@@ -1,0 +1,75 @@
+# xp_activate32 MAKEFILE for compiling under MinGW
+
+# Compiler and tools
+CC       := i686-w64-mingw32-gcc-win32
+CXX      := i686-w64-mingw32-g++-win32
+LD       := i686-w64-mingw32-g++-win32
+RC       := i686-w64-mingw32-windres
+
+# Targets
+NAME     := xp_activate32
+TARGET   := xp_activate32.exe
+
+# Build type: choose Debug or Release
+# Default is Release
+BUILDTYPE ?= Release
+
+# Directories
+SRC_DIR  := src
+
+# Automatically discover source files
+HEADERS  := $(wildcard $(SRC_DIR)/*.h)
+SRC_C    := $(wildcard $(SRC_DIR)/*.c)
+SRC_CPP  := $(wildcard $(SRC_DIR)/*.cc)
+SRC_RC   := $(wildcard $(SRC_DIR)/*.rc)
+
+# Objects
+OBJ_C    := $(SRC_C:.c=.o)
+OBJ_CPP  := $(SRC_CPP:.cc=.o)
+OBJ_RC   := $(SRC_RC:.rc=.o)
+
+# Compiler flags #
+DEFINES  := -DUNICODE -D_UNICODE -D_WINDOWS -DWINVER=0x0501 -D_WIN32_WINNT=0x0501 -D_WIN64_WINNT=0x0502 -D_WIN32_IE=0x0600 -DPSAPI_VERSION=1
+# Show all errors, compile everything static, ensure src dir is included, -municode
+# since this is a GUI windows app, ensure relocatable data
+CFLAGS   := $(DEFINES) -Wall -static -static-libgcc -municode
+# Compiler optimization and architecture flags
+CFLAGS   += -O2 -g -mfpmath=sse -mfxsr -msse -msse2 -MMD -MP
+# C++ only flags
+CXXFLAGS := $(CFLAGS) -std=c++17 -static-libstdc++
+
+# Libraries
+LIBS     := -lkernel32 -luser32 -lcomctl32 -lcomdlg32 -lshell32 -ladvapi32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32
+LIBS     += -lversion -lm
+# Linker flags
+LDFLAGS  := -static -municode -Wl,--subsystem,windows $(LIBS)
+
+# Include generated dependency files
+-include $(OBJ_C:.o=.d)
+-include $(OBJ_CPP:.o=.d)
+
+# Build Commands #
+all: $(TARGET)
+
+$(TARGET): $(OBJ_C) $(OBJ_CPP) $(OBJ_RC)
+	$(LD) $(OBJ_CPP) $(OBJ_RC) -o $(TARGET) $(LDFLAGS)
+
+# Compilation Rules #
+# Compile C sources
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Compile C++ sources
+%.o: %.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Compile .rc → .o or .res
+%.o: %.rc
+	$(RC) $< -o $@
+
+# Cleaning Rules #
+clean:
+	rm -f -v $(OBJ_C) $(OBJ_CPP) $(OBJ_RC) $(OBJ_C:.o=.d) $(OBJ_CPP:.o=.d) $(TARGET)
+
+# PHONY targets
+.PHONY: all clean
