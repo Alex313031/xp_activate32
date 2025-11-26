@@ -2,7 +2,23 @@
 
 #include "globals.h"
 
-static bool is_win11;
+namespace {
+  static bool is_win11;
+
+  static ULONG NT_MAJOR = 0;
+
+  static ULONG NT_MINOR = 0;
+
+  static ULONG NT_BUILD = 0;
+
+  static std::wstring NT_CSD_VERSION;
+
+  static std::string NT_SERVICE_PACK;
+
+  static USHORT NT_SUITE;
+
+  static UCHAR NT_TYPE;
+}
 
 HANDLE LoadImageFromDLL(LPCWSTR dllName,
                         UINT resourceId,
@@ -431,11 +447,16 @@ std::string const GetNTString() {
 // See http://ref.x86asm.net/coder32.html
 void ImmediateDebugCrash() {
 #if defined(_WIN32) && !defined(_WIN64)
+ #ifdef __MINGW32__
+  asm("int3\n\t"
+      "ud2");
+ #else
   // 32 bit assembly code
   __asm int 3 // Execute int3 interrupt
   __asm {
           UD2 // Execute 0x0F, 0x0B
         }
+ #endif // __MINGW32__
 #elif defined(_WIN64) // x86_64
   /* MSVC-specific x64 ud2 since MSVC doesn't allow inline assembly
      when compiling for x64 */

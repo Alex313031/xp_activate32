@@ -1038,14 +1038,11 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
   return FALSE;
 }
 
-int WINAPI wWinMain(_In_ HINSTANCE hInstance,
-             _In_opt_ HINSTANCE hPrevInstance,
-             _In_ WCHAR *pCmdLine,
-             _In_ INT nCmdShow) {
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
   UNREFERENCED_PARAMETER(hPrevInstance);
   /* Assign global HINSTANCE */
   g_hInstance = hInstance;
-  MSG Msg;
+  //MSG Msg;
   long err_status;
 
   // Allow and allocate conhost

@@ -1,23 +1,10 @@
 #ifndef XP_ACTIVATE32_H_
 #define XP_ACTIVATE32_H_
 
-#include <intrin.h>
-
 #include "constants.h"
 #include "framework.h"
 #include "resource.h"
-
-#ifndef STRICT
- #define STRICT
-#endif 
-
-#ifndef UNICODE
- #define UNICODE
-#endif
-
-#ifndef _UNICODE
- #define _UNICODE
-#endif
+#include "utils.h"
 
 typedef struct {
   ui64 u[2];

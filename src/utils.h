@@ -1,26 +1,24 @@
 #ifndef XP_ACTIVATE32_UTILS_H_
 #define XP_ACTIVATE32_UTILS_H_
 
+#ifdef __MINGW32__
+ extern "C" {
+  static __inline__ __attribute__((always_inline)) unsigned long long __emulu(
+      const unsigned int a, const unsigned int b) {
+    unsigned long long retval;
+    __asm__("mull %[b]" : "=A"(retval) : [a] "a"(a), [b] "rm"(b));
+    return retval;
+  }
+ }
+ #define __noop(...) ((void)0)
+#endif // __MINGW32__
+
+#include <intrin.h>
+
 #include "constants.h"
 #include "framework.h"
 
 extern wchar_t strings[16][256];
-
-namespace {
-  static ULONG NT_MAJOR = 0;
-
-  static ULONG NT_MINOR = 0;
-
-  static ULONG NT_BUILD = 0;
-
-  static std::wstring NT_CSD_VERSION;
-
-  static std::string NT_SERVICE_PACK;
-
-  static USHORT NT_SUITE;
-
-  static UCHAR NT_TYPE;
-}
 
 static std::string NT_FEATURE_VERSION;
 

@@ -5,7 +5,9 @@
 
 #pragma once
 
-#pragma code_page(65001) // UTF-8
+#ifdef __clang__
+ #pragma code_page(65001) // UTF-8
+#endif // __clang__
 
 #include "version.h"
 

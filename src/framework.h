@@ -1,6 +1,20 @@
 #pragma once
 
-#include <WinSDKVer.h>
+#ifndef STRICT
+ #define STRICT
+#endif 
+
+#ifndef UNICODE
+ #define UNICODE
+#endif
+
+#ifndef _UNICODE
+ #define _UNICODE
+#endif
+
+#ifndef __MINGW32__
+ #include <WinSDKVer.h>
+#endif // not __MINGW32__
 
 #ifndef WINVER
  #define WINVER _WIN32_WINNT_WINXP
@@ -21,9 +35,12 @@
  #define _ATL_XP_TARGETING
 #endif // _ATL_XP_TARGETING
 
-#include <SDKDDKVer.h>
+#ifndef __MINGW32__
+ #include <SDKDDKVer.h>
+#endif // not __MINGW32__
 
 #include <windows.h>
+#include <combaseapi.h>
 #include <commctrl.h>
 #include <commdlg.h>
 #include <tchar.h>
