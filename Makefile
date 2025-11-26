@@ -60,7 +60,7 @@ $(TARGET): $(OBJ_C) $(OBJ_CPP) $(OBJ_RC)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile C++ sources
-%.o: %.cc
+%.o: %.cc $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Compile .rc → .o or .res

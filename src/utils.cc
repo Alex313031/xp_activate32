@@ -444,8 +444,13 @@ std::wstring const GetOSNameW() {
   return retval;
 }
 
-std::wstring const GetWinVersion() {
-  const std::wstring wver = stringToWstring(GetNTString());
+std::string const GetWinVersionA() {
+  const std::string ver = GetNTString();
+  return ver;
+}
+
+std::wstring const GetWinVersionW() {
+  const std::wstring wver = stringToWstring(GetWinVersionA());
   return wver;
 }
 

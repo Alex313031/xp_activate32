@@ -1042,6 +1042,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   UNREFERENCED_PARAMETER(hPrevInstance);
   /* Assign global HINSTANCE */
   g_hInstance = hInstance;
+  int return_code;
+  bool open_main_dialog = false;
   //MSG Msg;
   long err_status;
 
@@ -1077,15 +1079,41 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
   std::wcout << welcome_str << std::endl;
   std::wcout << L"Windows Version: " << GetOSNameW() << std::endl;
-  std::wcout << L"GetWinVersion() = " << GetWinVersion() << std::endl;
-  std::cout << "WinVer: " << WinVer << std::endl;
+  std::wcout << L"NT Version = " << GetWinVersionW() << std::endl;
 
-  // Create main window
-  INT_PTR main_dialog = DialogBoxW(g_hInstance, MAKEINTRESOURCE(100), NULL, &DialogProc);
-  err_status = static_cast<long>(main_dialog);
+  constexpr float xp_ntver = 5.1f;
+  constexpr float xp64_ntver = 5.2f;
+  if (WinVer != xp_ntver && WinVer != xp64_ntver) {
+    int user_response_code;
+    user_response_code =
+        MessageBoxW(nullptr, XP_MISMATCH, L"Windows Version Mismatch!",
+                    MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON1);
+    if (user_response_code == IDNO) {
+      std::wcout << L"User declined, exiting..." << std::endl;
+      return_code = 0;
+    } else if (user_response_code == IDCANCEL) {
+      std::wcout << L"User declined, exiting..." << std::endl;
+      return_code = 0;
+    } else if (user_response_code == IDYES) {
+      return_code = 69;
+      open_main_dialog = true;
+    } else {
+      return_code = 2;
+    }
+  } else {
+    open_main_dialog = true;
+  }
 
-  for (i = 0; i < 2; i++) {
-    DestroyIcon(hIcon[i]);
+  if (open_main_dialog) {
+    // Create main window
+    INT_PTR main_dialog = DialogBoxW(g_hInstance, MAKEINTRESOURCE(100), NULL, &DialogProc);
+    err_status = static_cast<long>(main_dialog);
+
+    for (i = 0; i < 2; i++) {
+      DestroyIcon(hIcon[i]);
+    }
+  } else {
+    err_status = 0L;
   }
 
   if (LicenseAgent) {
@@ -1097,8 +1125,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   }
 
   std::wcout << L"err_status = " << err_status << std::endl;
-  if (err_status != 0L) {
+
+  if (err_status == 0L) {
+    return_code = 0;
+    return return_code;
+  } else {
     system("pause");
+    ExitProcess(err_status);
   }
-  ExitProcess(err_status);
 }

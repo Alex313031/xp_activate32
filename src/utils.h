@@ -54,8 +54,11 @@ std::string const GetOSNameA();
 
 std::wstring const GetOSNameW();
 
-std::wstring const GetWinVersion();
+std::string const GetWinVersionA();
 
+std::wstring const GetWinVersionW();
+
+// TODO convert to class and private
 std::string const GetNTString();
 
 // Debug functions
