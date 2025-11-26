@@ -28,7 +28,7 @@ static const IID licenseAgentIID = {0xB8CBAD79, 0x3F1F, 0x481A, {0xBB, 0x0C, 0xE
 //IID for ICOMLicenseAgent2, with three extra functions
 static const IID licenseAgentIID2 = {0x6A07C5A3, 0x9C67, 0x4BB6, {0xB0, 0x20, 0xEC, 0xBE, 0x7F, 0xDF, 0xD3, 0x26}};
 
-const LPCWSTR XP_MISMATCH = L"It seems you are not running Windows XP, \nwould you like to run the program anyway \nin debug mode for testing?)";
+const LPCWSTR XP_MISMATCH = L"It seems you are not running Windows XP, \nwould you like to run the program anyway \nin debug mode for testing?";
 
 __inline static constexpr float XP_NTVER = 5.1f;
 
