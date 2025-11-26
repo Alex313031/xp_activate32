@@ -1081,9 +1081,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   std::wcout << L"Windows Version: " << GetOSNameW() << std::endl;
   std::wcout << L"NT Version = " << GetWinVersionW() << std::endl;
 
-  constexpr float xp_ntver = 5.1f;
-  constexpr float xp64_ntver = 5.2f;
-  if (WinVer != xp_ntver && WinVer != xp64_ntver) {
+  if (WinVer != XP_NTVER && WinVer != XP64_NTVER) {
     int user_response_code;
     user_response_code =
         MessageBoxW(nullptr, XP_MISMATCH, L"Windows Version Mismatch!",
@@ -1108,12 +1106,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     // Create main window
     INT_PTR main_dialog = DialogBoxW(g_hInstance, MAKEINTRESOURCE(100), NULL, &DialogProc);
     err_status = static_cast<long>(main_dialog);
-
-    for (i = 0; i < 2; i++) {
-      DestroyIcon(hIcon[i]);
-    }
   } else {
     err_status = 0L;
+  }
+
+  for (i = 0; i < 2; i++) {
+    DestroyIcon(hIcon[i]);
   }
 
   if (LicenseAgent) {

@@ -30,4 +30,8 @@ static const IID licenseAgentIID2 = {0x6A07C5A3, 0x9C67, 0x4BB6, {0xB0, 0x20, 0x
 
 const LPCWSTR XP_MISMATCH = L"It seems you are not running Windows XP, \nwould you like to run the program anyway \nin debug mode for testing?)";
 
+__inline static constexpr float XP_NTVER = 5.1f;
+
+__inline static constexpr float XP64_NTVER = 5.2f;
+
 #endif // XP_ACTIVATE32_CONSTANTS_H_
