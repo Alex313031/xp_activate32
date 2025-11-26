@@ -17,6 +17,7 @@
 
 #include "constants.h"
 #include "framework.h"
+#include "globals.h"
 #include "strings.h"
 
 extern wchar_t strings[16][256];
@@ -41,14 +42,19 @@ std::string getVersionA();
 
 std::wstring getVersionW();
 
+// Converts version ints to float we can read
+float concatToFloat(int major, int minor);
+
 // Windows version getter functions
-float getWinNTVersion();
+bool getWinNTVersion();
 
-extern std::string WinVer;
+extern float WinVer;
 
-std::wstring GetWinVersion();
+std::string const GetOSNameA();
 
-std::string const GetOSName();
+std::wstring const GetOSNameW();
+
+std::wstring const GetWinVersion();
 
 std::string const GetNTString();
 

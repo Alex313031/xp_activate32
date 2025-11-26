@@ -1,6 +1,10 @@
 #include "utils.h"
 
-#include "globals.h"
+#include <cmath>
+
+std::string AppVer;
+
+float WinVer;
 
 namespace {
   static bool is_win11;
@@ -76,19 +80,28 @@ HICON getDialogIcon(bool use_custom_icon, int resource, int x, int y) {
 
 std::string getVersionA() {
   std::ostringstream ostr;
-  ostr << MAJOR_VERSION << "." << MINOR_VERSION << L"." << BUILD_VERSION;
-  return ostr.str();
+  ostr << MAJOR_VERSION << "." << MINOR_VERSION << "." << BUILD_VERSION;
+  const std::string retval = ostr.str();
+  AppVer = retval;
+  return retval;
 }
 
 std::wstring getVersionW() {
-  std::wostringstream wostr;
-  wostr << MAJOR_VERSION << L"." << MINOR_VERSION << L"." << BUILD_VERSION;
-  return wostr.str();
+  const std::wstring retval = stringToWstring(getVersionA());
+  return retval;
 }
 
-std::string WinVer;
+float concatToFloat(int major, int minor) {
+  // Count digits of the fractional part
+  int digits = (minor == 0) ? 1 : std::to_string(minor).size();
 
-float getWinNTVersion() {
+  // Build the float: whole + fractional / (10^digits)
+  const float retval = major + minor / std::pow(10.0f, digits);
+  return retval;
+}
+
+bool getWinNTVersion() {
+  bool success = false;
   // Use RtlGetVersion from winnt.h, not wdm.h
   NTSTATUS(WINAPI *RtlGetVersion)(LPOSVERSIONINFOEXW);
   // https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
@@ -103,6 +116,7 @@ float getWinNTVersion() {
         GetProcAddress(NtDllModule, "RtlGetVersion");
   } else {
     RtlGetVersion = nullptr;
+    success = false;
   }
 
   // Should never be null
@@ -115,27 +129,30 @@ float getWinNTVersion() {
     NT_CSD_VERSION = osInfo.szCSDVersion;
     NT_SUITE = osInfo.wSuiteMask;
     NT_TYPE = osInfo.wProductType;
+    success = true;
   } else {
     MessageBoxW(g_hMainDlg, strings[IDS_GETVER_ERR], strings[IDS_ERROR], MB_ICONSTOP);
   }
-  return 5.1f;
-}
 
-std::wstring GetWinVersion() {
-  const std::string ver = GetOSName();
-  WinVer = ver;
-  std::wstring wver = stringToWstring(WinVer);
-  return wver;
+  const int major = static_cast<int>(NT_MAJOR);
+  const int minor = static_cast<int>(NT_MINOR);
+  // Set our extern WinVer
+  WinVer = concatToFloat(major, minor);
+
+  return success;
 }
 
 // Use WINNT API functions to get OS and system information
-std::string const GetOSName() {
+std::string const GetOSNameA() {
   // Human readable OS name
   std::string OsVer;
   // For obscure versions or pre NT4 SP6
   std::ostringstream debugStream;
 
-  float NT_VER = getWinNTVersion();
+  const bool gotNTVersion = getWinNTVersion();
+  if (!gotNTVersion) {
+    return std::string();
+  }
 
   // Get the service pack
   std::string NT_SERVICE_PACK(NT_CSD_VERSION.begin(),
@@ -422,22 +439,33 @@ std::string const GetOSName() {
   return OsVer;
 }
 
+std::wstring const GetOSNameW() {
+  const std::wstring retval = stringToWstring(GetOSNameA());
+  return retval;
+}
+
+std::wstring const GetWinVersion() {
+  const std::wstring wver = stringToWstring(GetNTString());
+  return wver;
+}
+
 std::string const GetNTString() {
   // NT version number
   std::string NtVer;
   std::ostringstream debugStream;
 
-  float NT_VER = getWinNTVersion();
+  bool gotNTVersion = getWinNTVersion();
+  if (!gotNTVersion) {
+    return std::string();
+  }
 
   // Make sure that the values returned make sense.
   // NT Kernels with numbers outside this range don't exist
   if (NT_MAJOR >=3 && NT_MAJOR <=11) {
     // Define NtVer as human readable string literal separated by decimals
-    NtVer = " " + std::to_string(NT_MAJOR)
-                + "." +
-                std::to_string(NT_MINOR)
-                + "." +
-                std::to_string(NT_BUILD);
+    NtVer = std::to_string(NT_MAJOR)
+        + "." + std::to_string(NT_MINOR)
+        + "." + std::to_string(NT_BUILD);
   }
 
   return NtVer;

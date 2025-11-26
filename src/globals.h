@@ -12,7 +12,7 @@ extern HINSTANCE g_hInstance;
 // Main window handle
 extern HWND g_hMainDlg;
 
-// This Windows version
-extern std::string WinVer;
+// This App version
+extern std::string AppVer;
 
 #endif // XP_ACTIVATE32_GLOBALS_H_
