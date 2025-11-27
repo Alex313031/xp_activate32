@@ -1081,25 +1081,29 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   std::wcout << L"Windows Version: " << GetOSNameW() << std::endl;
   std::wcout << L"NT Version = " << GetWinVersionW() << std::endl;
 
-  if (WinVer != XP_NTVER && WinVer != XP64_NTVER) {
+  if (WinVer == XP_NTVER || WinVer == XP64_NTVER) {
+    // Skip and go straight to main window.
+    open_main_dialog = true;
+  } else {
     int user_response_code;
+    // Ask if use still wants to proceed on non-XP system.
     user_response_code =
         MessageBoxW(nullptr, XP_MISMATCH, L"Windows Version Mismatch!",
                     MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON1);
-    if (user_response_code == IDNO) {
-      std::wcout << L"User declined, exiting..." << std::endl;
-      return_code = 0;
-    } else if (user_response_code == IDCANCEL) {
-      std::wcout << L"User declined, exiting..." << std::endl;
-      return_code = 0;
-    } else if (user_response_code == IDYES) {
-      return_code = 69;
-      open_main_dialog = true;
-    } else {
-      return_code = 2;
+    switch (user_response_code) {
+      case IDNO:
+      case IDCANCEL:
+        std::wcout << L"User declined, exiting..." << std::endl;
+        return_code = 0;
+        break;
+      case IDYES:
+        return_code = 69;
+        open_main_dialog = true;
+        break;
+      default:
+        return_code = 2;
+        break;
     }
-  } else {
-    open_main_dialog = true;
   }
 
   if (open_main_dialog) {
