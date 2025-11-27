@@ -1,5 +1,9 @@
 #include "xp_activate32.h"
 
+#ifdef USING_CR_BASE
+ #include "base/logging.h"
+#endif // USING_CR_BASE
+
 #include "keygen.h"
 #include "utils.h"
 

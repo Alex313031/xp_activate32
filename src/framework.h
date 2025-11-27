@@ -12,18 +12,18 @@
  #define _UNICODE
 #endif
 
-#ifndef __MINGW32__
- #include <WinSDKVer.h>
-#endif // not __MINGW32__
-
 #ifndef WINVER
- #define WINVER _WIN32_WINNT_WINXP
+ #define WINVER 0x0501
 #endif // WINVER
 #ifndef _WIN32_WINNT
- #define _WIN32_WINNT _WIN32_WINNT_WINXP
+ #if defined(_M_X64) || defined(__amd64__) || defined(_WIN64)
+  #define _WIN32_WINNT 0x0502 // Windows XP x64/Server 2003
+ #else
+  #define _WIN32_WINNT 0x0501 // Windows XP x86
+ #endif // defined(_M_X64) || defined(__amd64__) || defined(_WIN64)
 #endif // _WIN32_WINNT
 #ifndef _WIN64_WINNT
- #define _WIN64_WINNT _WIN32_WINNT_WS03s // Minimum version for 64 bit
+ #define _WIN64_WINNT 0x0502 // Minimum version for 64 bit
 #endif // _WIN64_WINNT
 #ifndef _WIN32_IE
  #define _WIN32_IE 0x0600 // Minimum Internet Explorer version
@@ -34,10 +34,6 @@
 #ifndef _ATL_XP_TARGETING
  #define _ATL_XP_TARGETING
 #endif // _ATL_XP_TARGETING
-
-#ifndef __MINGW32__
- #include <SDKDDKVer.h>
-#endif // not __MINGW32__
 
 #include <windows.h>
 #include <commctrl.h>

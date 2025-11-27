@@ -8,7 +8,6 @@ import("//build/config/win/manifest.gni")
 executable("xp_activate32") {
   configs -= [
     "//build/config/win:console",
-    "//build/config/win:nominmax",
   ]
 
   configs += [
@@ -29,8 +28,6 @@ precompiled_header("precompiled") {
 }
 
 source_set("xp_activate32_sources") {
-  configs -= [ "//build/config/win:nominmax", ]
-
   # Must explicitly set this for sources
   configs += [ "//build/config/win:windowed", ]
 
@@ -57,12 +54,18 @@ source_set("xp_activate32_sources") {
     "src/utils.cc",
     "src/xp_activate32.cc",
   ]
+
+  public_deps = [
+    "../cr_base:cr_base"
+  ]
 }
 
 # Program-specific build config
 config("xp_activate32_config") {
+  defines = []
   cflags = []
   ldflags = []
+  defines += [ "USING_CR_BASE" ]
   libs = [
     "comctl32.lib",
     "kernel32.lib",
