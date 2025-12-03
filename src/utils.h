@@ -2,15 +2,15 @@
 #define XP_ACTIVATE32_UTILS_H_
 
 #ifdef __MINGW32__
- extern "C" {
+extern "C" {
   static __inline__ __attribute__((always_inline)) unsigned long long __emulu(
       const unsigned int a, const unsigned int b) {
     unsigned long long retval;
     __asm__("mull %[b]" : "=A"(retval) : [a] "a"(a), [b] "rm"(b));
     return retval;
   }
- }
- #define __noop(...) ((void)0)
+  #define __noop(...) ((void)0)
+}
 #endif // __MINGW32__
 
 #include <intrin.h>
@@ -18,6 +18,7 @@
 #include "constants.h"
 #include "framework.h"
 #include "globals.h"
+#include "resource.h"
 #include "strings.h"
 
 extern wchar_t strings[16][256];
@@ -48,7 +49,7 @@ float concatToFloat(int major, int minor);
 // Windows version getter functions
 bool getWinNTVersion();
 
-extern float WinVer;
+extern unsigned long WinVer;
 
 std::string const GetOSNameA();
 
@@ -58,12 +59,9 @@ std::string const GetWinVersionA();
 
 std::wstring const GetWinVersionW();
 
-// TODO convert to class and private
-std::string const GetNTString();
-
 // Debug functions
 
-void NotReachedImpl(std::string func_name);
+inline void NotReachedImpl(std::string func_name);
 
 #ifndef NOTREACHED
 #define NOTREACHED() \
