@@ -1,8 +1,9 @@
 # Set default behavior to automatically normalize line endings.
 * text=auto
 *.c text
-*.cc text
-*.cpp text
+*.h text
+*.cc text eol=lf
+*.cpp text eol=lf
 *.hpp text
 
 # GN/Ninja Files

@@ -19,6 +19,7 @@ Thumbs.db
 *.a
 *.d
 *.o
+*.lo
 *.obj
 *.pdb
 *.res
