@@ -667,7 +667,7 @@ int generate(const CHARTYPE* installation_id_str, CHARTYPE confirmation_id[49]) 
       if (!count) {
         return (totalCount == 45) ? ERR_TOO_LARGE : ERR_TOO_SHORT;
       }
-      if (d != check % 7) {
+      if (d != static_cast<int>(check % 7)) {
         return (count < 5) ? ERR_TOO_SHORT : ERR_INVALID_CHECK_DIGIT;
       }
       check = 0;
@@ -1082,10 +1082,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
   std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
   std::wcout << welcome_str << std::endl;
-  std::wcout << L"Windows Version: " << GetOSNameW() << std::endl;
-  std::wcout << L"NT Version = " << GetWinVersionW() << std::endl;
+  wchar_t buffer[64];
+  swprintf_s(buffer, 64, L" (%s) ", GetOSNameW().c_str());
+  std::wcout << L"Windows Version: " << GetWinVersionW() << buffer << std::endl;
 
-  if (WinVer == XP_NTVER || WinVer == XP64_NTVER) {
+  if (WinVer == WIN_XP || WinVer == WIN_2003) {
     // Skip and go straight to main window.
     open_main_dialog = true;
   } else {
