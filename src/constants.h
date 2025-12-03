@@ -6,8 +6,6 @@
 #include <cstdint>
 #include <string>
 
-#include "resource.h"
-
 #define assert(x) /*nothing*/
 
 #ifndef __FUNC__
@@ -30,8 +28,12 @@ static const IID licenseAgentIID2 = {0x6A07C5A3, 0x9C67, 0x4BB6, {0xB0, 0x20, 0x
 
 const LPCWSTR XP_MISMATCH = L"It seems you are not running Windows XP, \nwould you like to run the program anyway \nin debug mode for testing?";
 
-__inline static constexpr float XP_NTVER = 5.1f;
+inline static constexpr unsigned long WIN_2K = 0x0500UL;
+inline static constexpr unsigned long WIN_XP = 0x0501UL;
+inline static constexpr unsigned long WIN_2003 = 0x0502UL;
+inline static constexpr unsigned long WIN_VISTA = 0x0600UL;
+inline static constexpr unsigned long WIN_7 = 0x0601UL;
 
-__inline static constexpr float XP64_NTVER = 5.2f;
+constexpr char kUtf8ByteOrderMark[] = "\xEF\xBB\xBF";
 
 #endif // XP_ACTIVATE32_CONSTANTS_H_

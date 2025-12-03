@@ -12,19 +12,31 @@
  #define _UNICODE
 #endif
 
+#if defined(_M_X64) || defined(__amd64__) || defined(_WIN64)
+ inline static constexpr bool IsAMD64 = true;
+ #ifndef _WIN64
+  #define _WIN64
+ #endif
+#else
+ inline static constexpr bool IsAMD64 = false;
+#endif // defined(_M_X64) || defined(__amd64__) || defined(_WIN64)
+
 #ifndef WINVER
  #define WINVER 0x0501
 #endif // WINVER
+
 #ifndef _WIN32_WINNT
- #if defined(_M_X64) || defined(__amd64__) || defined(_WIN64)
+ #ifdef _WIN64
   #define _WIN32_WINNT 0x0502 // Windows XP x64/Server 2003
  #else
   #define _WIN32_WINNT 0x0501 // Windows XP x86
- #endif // defined(_M_X64) || defined(__amd64__) || defined(_WIN64)
+ #endif // _WIN64
 #endif // _WIN32_WINNT
+
 #ifndef _WIN64_WINNT
  #define _WIN64_WINNT 0x0502 // Minimum version for 64 bit
 #endif // _WIN64_WINNT
+
 #ifndef _WIN32_IE
  #define _WIN32_IE 0x0600 // Minimum Internet Explorer version
 #endif // _WIN32_IE
@@ -40,5 +52,10 @@
 #include <commdlg.h>
 #include <tchar.h>
 #include <iostream>
+#include <iomanip>
+#include <ostream>
 #include <sstream>
+#include <stdint.h>
 #include <string>
+#include <string_view>
+#include <vector>
