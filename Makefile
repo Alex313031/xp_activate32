@@ -39,10 +39,10 @@ CFLAGS   += -O2 -g -mfpmath=sse -mfxsr -msse -msse2 -MMD -MP
 CXXFLAGS := $(CFLAGS) -std=c++17 -static-libstdc++
 
 # Libraries
-LIBS     := -lkernel32 -luser32 -lcomctl32 -lcomdlg32 -lshell32 -ladvapi32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32
-LIBS     += -lversion -lm
+LIBS     := -lkernel32 -luser32 -lcomctl32 -lcomdlg32 -lshell32 -lgdi32 -ladvapi32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lversion
+LIBS     += -lm
 # Linker flags
-LDFLAGS  := -static -municode -Wl,--subsystem,windows $(LIBS)
+LDFLAGS  := $(LIBS) -static -municode -Wl,--subsystem,windows
 
 # Include generated dependency files
 -include $(OBJ_C:.o=.d)
@@ -52,7 +52,7 @@ LDFLAGS  := -static -municode -Wl,--subsystem,windows $(LIBS)
 all: $(TARGET)
 
 $(TARGET): $(OBJ_C) $(OBJ_CPP) $(OBJ_RC)
-	$(LD) $(OBJ_CPP) $(OBJ_RC) -o $(TARGET) $(LDFLAGS)
+	$(LD) $(OBJ_C) $(OBJ_CPP) $(OBJ_RC) -o $(TARGET) $(LDFLAGS)
 
 # Compilation Rules #
 # Compile C sources
