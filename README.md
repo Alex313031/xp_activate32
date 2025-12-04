@@ -26,6 +26,8 @@ if using MSVS 2017/2019/2022. In an MSVS terminal with `msbuild` in your path, i
 
  - Replace `/p:Platform=x86`with `/p:Platform=x64` to make a 64 bit build suitable for Windows XP x64.
 
+ The executable will be placed in corresponding __Debug__ or __Release__ directory.
+
 ### MinGW
 
 From an MinGW prompt (you may have to edit the `CC`/ `CXX`/ `LD`/ `RC` variables in the [Makefile](./Makefile)):
@@ -33,6 +35,8 @@ From an MinGW prompt (you may have to edit the `CC`/ `CXX`/ `LD`/ `RC` variables
 ```bash
   make clean && make all
 ```
+
+ The executable will be placed in the root directory, side by side with the Makefile.
 
 ## About
  Based on Endermanch's work https://github.com/Endermanch/XPConfirmationIDKeygen, which is itself based on other's
