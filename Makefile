@@ -40,7 +40,6 @@ CXXFLAGS := $(CFLAGS) -std=c++17 -static-libstdc++
 
 # Libraries
 LIBS     := -lkernel32 -luser32 -lcomctl32 -lcomdlg32 -lshell32 -lgdi32 -ladvapi32 -lole32 -loleaut32 -luuid -lodbc32 -lodbccp32 -lversion
-LIBS     += -lm
 # Linker flags
 LDFLAGS  := $(LIBS) -static -municode -Wl,--subsystem,windows
 
