@@ -9,6 +9,7 @@ Thumbs.db
 *.tlog
 *.vs/
 /.vs/
+/.idea/
 *.rsuser
 *.suo
 *.user
