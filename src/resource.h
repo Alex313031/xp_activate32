@@ -9,8 +9,6 @@
  #pragma code_page(65001) // UTF-8
 #endif // __clang__
 
-#include "version.h"
-
 #define IDD_MAINFRAME                   100 // Main dialog
 
 #define IDI_MAINFRAME                   106 // Main .exe/window icon
