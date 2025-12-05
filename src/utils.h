@@ -20,6 +20,7 @@ extern "C" {
 #include "globals.h"
 #include "resource.h"
 #include "strings.h"
+#include "version.h"
 
 extern wchar_t strings[16][256];
 
