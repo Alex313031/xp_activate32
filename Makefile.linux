@@ -33,8 +33,15 @@ DEFINES  := -DUNICODE -D_UNICODE -D_WINDOWS -DWINVER=0x0501 -D_WIN32_WINNT=0x050
 # Show all errors, compile everything static, ensure src dir is included, -municode
 # since this is a GUI windows app, ensure relocatable data
 CFLAGS   := $(DEFINES) -Wall -static -static-libgcc -municode
+
 # Compiler optimization and architecture flags
-CFLAGS   += -O2 -g -mfpmath=sse -mfxsr -msse -msse2 -MMD -MP
+ifeq ($(BUILDTYPE), Release)
+CFLAGS   += -O2 -g0 -s -MMD -MP -mfpmath=sse -mfxsr -msse -msse2
+endif
+ifeq ($(BUILDTYPE), Debug)
+CFLAGS   += -Og -g -MMD -MP -mfpmath=sse -mfxsr -msse -msse2
+endif
+
 # C++ only flags
 CXXFLAGS := $(CFLAGS) -std=c++17 -static-libstdc++
 
