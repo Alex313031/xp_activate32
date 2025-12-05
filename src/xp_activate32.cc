@@ -1057,8 +1057,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   }
   // File handler pointer to a dummy file, possibly an actual logfile
   FILE* fNonExistFile = fDummyFile;
-  freopen_s(&fNonExistFile, "CONOUT$", "w", stdout);
-  freopen_s(&fNonExistFile, "CONOUT$", "w", stderr);
+#ifndef __MINGW32__
+  freopen_s(&fNonExistFile, "CONOUT$", "w", stdout); // Standard error
+  freopen_s(&fNonExistFile, "CONOUT$", "w", stderr); // Standard out
+#else
+  // freopen_s doesn't exist in MinGW...
+  fNonExistFile = freopen("CONOUT$", "w", stdout); // Standard error
+  fNonExistFile = freopen("CONOUT$", "w", stderr); // Standard out
+#endif // __MINGW32__
 
   LPWSTR cmdLine = GetCommandLineW();
   if (cmdLine == nullptr || cmdLine == NULL) {
