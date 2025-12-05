@@ -1065,6 +1065,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   fNonExistFile = freopen("CONOUT$", "w", stdout); // Standard error
   fNonExistFile = freopen("CONOUT$", "w", stderr); // Standard out
 #endif // __MINGW32__
+  if (!fNonExistFile) {
+    return 1;
+  }
 
   LPWSTR cmdLine = GetCommandLineW();
   if (cmdLine == nullptr || cmdLine == NULL) {
