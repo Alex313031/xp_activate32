@@ -6,10 +6,11 @@
 *.cpp text eol=lf
 *.hpp text
 
-# GN/Ninja Files
+# Build system Files
 *.py text
 *.gn text
 *.gni text
+*.mak text eol=lf
 
 # Keep scripts correct
 *.sh text eol=lf

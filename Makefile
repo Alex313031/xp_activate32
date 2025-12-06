@@ -1,4 +1,4 @@
-# xp_activate32 MAKEFILE for compiling under MSYS2 MinGW32
+# xp_activate32 MAKEFILE for compiling under MinGW32
 
 # Compiler and tools
 CC       := i686-w64-mingw32-gcc
@@ -26,7 +26,7 @@ SRC_RC   := $(wildcard $(SRC_DIR)/*.rc)
 # Objects
 OBJ_C    := $(SRC_C:.c=.o)
 OBJ_CPP  := $(SRC_CPP:.cc=.o)
-OBJ_RC   := $(SRC_RC:.rc=.o)
+OBJ_RC   := $(SRC_RC:.rc=.res)
 
 # Compiler flags #
 DEFINES  := -DUNICODE -D_UNICODE -D_WINDOWS -DWINVER=0x0501 -D_WIN32_WINNT=0x0501 -D_WIN64_WINNT=0x0502 -D_WIN32_IE=0x0600 -DPSAPI_VERSION=1
@@ -57,6 +57,10 @@ LDFLAGS  := $(LIBS) -static -municode -Wl,--subsystem,windows
 # Build Commands #
 all: $(TARGET)
 
+# The only target for now is xp_activate32.exe
+$(NAME): $(TARGET)
+
+# xp_activate32.exe itself
 $(TARGET): $(OBJ_C) $(OBJ_CPP) $(OBJ_RC)
 	$(LD) $(OBJ_C) $(OBJ_CPP) $(OBJ_RC) -o $(TARGET) $(LDFLAGS)
 
@@ -70,12 +74,16 @@ $(TARGET): $(OBJ_C) $(OBJ_CPP) $(OBJ_RC)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Compile .rc → .o or .res
-%.o: %.rc
-	$(RC) $< -o $@
+%.res: %.rc
+	$(RC) $< -O coff $@
 
 # Cleaning Rules #
 clean:
 	rm -f -v $(OBJ_C) $(OBJ_CPP) $(OBJ_RC) $(OBJ_C:.o=.d) $(OBJ_CPP:.o=.d) $(TARGET)
 
-# PHONY targets
-.PHONY: all clean
+# Testing rules #
+test:
+	cat $(TARGET)
+
+# PHONY targets for build deps tracking
+.PHONY: all $(NAME) clean test
