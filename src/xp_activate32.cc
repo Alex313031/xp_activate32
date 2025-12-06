@@ -1061,7 +1061,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   freopen_s(&fNonExistFile, "CONOUT$", "w", stdout); // Standard error
   freopen_s(&fNonExistFile, "CONOUT$", "w", stderr); // Standard out
 #else
-  // freopen_s doesn't exist in MinGW...
+  // freopen_s equivalent doesn't exist in MinGW32...
   fNonExistFile = freopen("CONOUT$", "w", stdout); // Standard error
   fNonExistFile = freopen("CONOUT$", "w", stderr); // Standard out
 #endif // __MINGW32__
@@ -1092,7 +1092,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   std::wstring welcome_str = L"Welcome to XP_Activate32 ver. " + getVersionW();
   std::wcout << welcome_str << std::endl;
   wchar_t buffer[64];
-  swprintf_s(buffer, 64, L" (%s) ", GetOSNameW().c_str());
+#ifndef __MINGW32__
+  swprintf_s(buffer, 64, L" (%ls) ", GetOSNameW().c_str());
+#else
+  // snwprintf is MinGW32 equivalent.
+  snwprintf(buffer, 64, L" (%ls) ", GetOSNameW().c_str());
+#endif // __MINGW32__
   std::wcout << L"Windows Version: " << GetWinVersionW() << buffer << std::endl;
 
   if (WinVer == WIN_XP || WinVer == WIN_2003) {

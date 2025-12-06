@@ -13,11 +13,11 @@
 #include "version.h"
 #endif
 #define APSTUDIO_HIDDEN_SYMBOLS
-#include "windows.h"
+#include <windows.h>
 #undef APSTUDIO_HIDDEN_SYMBOLS
-#include "winres.h"
+#include <winres.h>
 #ifdef __MINGW32__
-#include "winuser.h"
+#include <winuser.h>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@
 
 #ifdef __MINGW32__
 // Embed manifest for common controls and DPI support
-1 RT_MANIFEST "xp_activate32.manifest"
+APP_MANIFEST RT_MANIFEST "xp_activate32.manifest"
 #endif
 
 #ifdef APSTUDIO_INVOKED

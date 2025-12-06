@@ -96,7 +96,7 @@ float concatToFloat(int major, int minor) {
   int digits = (minor == 0) ? 1 : std::to_string(minor).size();
 
   // Build the float: whole + fractional / (10^digits)
-  const float retval = major + minor / std::pow(10.0f, digits);
+  const float retval = static_cast<float>(major + minor / std::pow(10.0f, digits));
   return retval;
 }
 

@@ -9,31 +9,37 @@
  #pragma code_page(65001) // UTF-8
 #endif // __clang__
 
-#define IDD_MAINFRAME                   100 // Main dialog
+#define IDD_MAINFRAME                100 // Main dialog
 
-#define IDI_MAINFRAME                   106 // Main .exe/window icon
-#define IDI_SMALL                       107 // Main dialog icon
-#define IDC_MAINFRAME                   108 // Main window
+#define IDI_MAINFRAME                106 // Main .exe/window icon
+#define IDI_SMALL                    107 // Main dialog icon
+#define IDC_MAINFRAME                108 // Main window
 
-#define IDS_SUCC_ACTIVATION             0
-#define IDS_WAITING_INPUT               1
-#define IDS_ID_TOO_LARGE                2
-#define IDS_INVALID_CHAR                3
-#define IDS_INVALID_CHECK               4
-#define IDS_UNKNOWN_ID                  5
-#define IDS_UNLUCKY_ID                  6
-#define IDS_TALKING_TO_SYS              7
-#define IDS_ERROR                       8
-#define IDS_INFORMATION                 9
-#define IDS_FAILED_INITIALIZE           10
-#define IDS_FAILED_CHECK                11
-#define IDS_ALREADY_ACTIVATED           12
-#define IDS_LIC_MAN_FAILED              13
-#define IDS_GETVER_ERR                  14
-#define IDS_ABOUT_TITLE                 15
+#define IDS_SUCC_ACTIVATION          0
+#define IDS_WAITING_INPUT            1
+#define IDS_ID_TOO_LARGE             2
+#define IDS_INVALID_CHAR             3
+#define IDS_INVALID_CHECK            4
+#define IDS_UNKNOWN_ID               5
+#define IDS_UNLUCKY_ID               6
+#define IDS_TALKING_TO_SYS           7
+#define IDS_ERROR                    8
+#define IDS_INFORMATION              9
+#define IDS_FAILED_INITIALIZE        10
+#define IDS_FAILED_CHECK             11
+#define IDS_ALREADY_ACTIVATED        12
+#define IDS_LIC_MAN_FAILED           13
+#define IDS_GETVER_ERR               14
+#define IDS_ABOUT_TITLE              15
+
+#ifdef APP_MANIFEST
+ #warning "APP_MANIFEST" should not already be defined
+#else
+ #define APP_MANIFEST                1
+#endif // APP_MANIFEST
 
 #ifndef IDC_STATIC
- #define IDC_STATIC                     -1
+ #define IDC_STATIC                 -1
 #endif // IDC_STATIC
 
 // Next default values for new objects
