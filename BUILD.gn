@@ -1,40 +1,23 @@
 # xp_activate32
 
-import("//build/config/precompiled_header.gni")
-import("//build/config/static_shared.gni")
-import("//build/config/win/manifest.gni")
-
 # Main executable
 executable("xp_activate32") {
-  configs -= [
-    "//build/config/win:console",
-  ]
+  configs -= [ "//build/config/win:console_subsystem" ]
 
   configs += [
-    "//build/config/win:windowed",
+    "//build/config/win:windowed_subsystem",
     ":xp_activate32_config",
   ]
 
   deps = [
     ":xp_activate32_sources",
-    ":xp_activate32_manifest",
   ]
-}
-
-# Precompiled header for common C/C++ stdlib stuff
-precompiled_header("precompiled") {
-  precompiled_header = "src/stdafx.h"
-  precompiled_source = "src/stdafx.cc"
 }
 
 source_set("xp_activate32_sources") {
   # Must explicitly set this for sources
-  configs += [ "//build/config/win:windowed", ]
-
-  configs += [
-    ":xp_activate32_config",
-    #":precompiled"
-  ]
+  configs += [ "//build/config/win:windowed_subsystem", ]
+  configs += [ ":xp_activate32_config", ]
 
   sources = [
     "src/constants.h",
@@ -54,10 +37,6 @@ source_set("xp_activate32_sources") {
     "src/utils.cc",
     "src/xp_activate32.cc",
   ]
-
-  public_deps = [
-    "../cr_base:cr_base"
-  ]
 }
 
 # Program-specific build config
@@ -65,29 +44,8 @@ config("xp_activate32_config") {
   defines = []
   cflags = []
   ldflags = []
-  defines += [ "USING_CR_BASE" ]
   libs = [
-    "comctl32.lib",
-    "kernel32.lib",
-    "user32.lib",
-    "ole32.lib",
-    "oleaut32.lib",
+    "ole32",
+    "oleaut32",
   ]
-}
-
-windows_manifest("xp_activate32_manifest") {
-  # No-Op on XP, but need it for running on newer systems to display warning dialog.
-  sources = [ require_administrator_manifest ]
-  # Breaks program for some reason, despite it using Unicode all throughout
-  #sources += [ unicode_manifest, ]
-
-  # Common controls was never working in the original one, finally have it working.
-  if (use_common_controls) {
-    sources += [ common_controls_manifest, ]
-  }
-}
-
-group("xp_activate32_test") {
-  testonly = true
-  public_deps = [ ]
 }
